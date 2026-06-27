@@ -99,7 +99,29 @@ git commit -m "อธิบายการเปลี่ยนแปลง"
 git push
 ```
 
-GitHub ใช้สำหรับ **เก็บประวัติเวอร์ชันและทำงานร่วมกัน** ส่วนการนำขึ้นเว็บจริงทำที่ HostNeverDie ตามขั้นตอนด้านบน
+---
+
+## Auto-deploy: GitHub → HostNeverDie (FTP)
+
+repo นี้มี GitHub Actions (`.github/workflows/deploy.yml`) ที่จะ **อัปไฟล์ขึ้น HostNeverDie ผ่าน FTP ให้อัตโนมัติทุกครั้งที่ push ขึ้น branch `main`** (และกดรันเองได้ที่แท็บ Actions)
+
+ตั้งค่าครั้งเดียว — เพิ่ม **Secrets** ใน GitHub repo:
+`Settings → Secrets and variables → Actions → New repository secret`
+
+| ชื่อ Secret | ค่า |
+|-------------|-----|
+| `FTP_SERVER` | `ftp.omnoigroup-it.com` (หรือ IP เซิร์ฟเวอร์) |
+| `FTP_USERNAME` | ชื่อบัญชี FTP |
+| `FTP_PASSWORD` | รหัสผ่าน FTP |
+
+จากนั้นทุก `git push` → ดูสถานะการ deploy ได้ที่แท็บ **Actions**
+
+หมายเหตุ:
+- ปรับ `server-dir` ในไฟล์ workflow ให้ตรงกับโฟลเดอร์ปลายทาง — ถ้าบัญชี FTP จำกัดอยู่ในโฟลเดอร์ subdomain แล้วใช้ `./` ได้เลย ถ้าเป็นบัญชีหลักให้ใส่ path เต็ม เช่น `/domains/omnoigroup-it.com/public_html/lms/`
+- ถ้า `ftps` ต่อไม่ติด ให้เปลี่ยน `protocol:` เป็น `ftp`
+- การ deploy ครั้งแรก action จะสร้างไฟล์ `.ftp-deploy-sync-state.json` บนเซิร์ฟเวอร์เพื่อจำว่าไฟล์ไหนเปลี่ยน (ครั้งถัดไปอัปเฉพาะที่แก้ ทำให้เร็วขึ้น)
+
+GitHub ใช้สำหรับ **เก็บประวัติเวอร์ชัน + auto-deploy** ส่วนวิดีโออยู่บน Cloudflare Stream
 
 ---
 

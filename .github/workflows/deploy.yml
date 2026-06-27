@@ -1,0 +1,38 @@
+name: Deploy to HostNeverDie (FTP)
+
+# อัปไฟล์ขึ้น HostNeverDie อัตโนมัติทุกครั้งที่ push ขึ้น branch main
+# และกดรันเองได้จากแท็บ Actions (workflow_dispatch)
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  ftp-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: 📂 Sync to HostNeverDie via FTP
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        with:
+          server:   ${{ secrets.FTP_SERVER }}     # เช่น ftp.omnoigroup-it.com หรือ IP เซิร์ฟเวอร์
+          username: ${{ secrets.FTP_USERNAME }}    # ชื่อบัญชี FTP
+          password: ${{ secrets.FTP_PASSWORD }}    # รหัสผ่าน FTP (เก็บเป็น Secret เท่านั้น)
+          protocol: ftps                           # ปลอดภัยกว่า — ถ้าต่อไม่ติดให้เปลี่ยนเป็น ftp
+          port: 21
+
+          # โฟลเดอร์ปลายทางบนเซิร์ฟเวอร์:
+          # - ถ้าบัญชี FTP ถูกจำกัดให้อยู่ในโฟลเดอร์ของ subdomain อยู่แล้ว ใช้ ./ ได้เลย
+          # - ถ้าเป็นบัญชี FTP หลัก ให้เปลี่ยนเป็น path เต็ม เช่น
+          #   /domains/omnoigroup-it.com/public_html/lms/
+          server-dir: ./
+
+          # ไม่ต้องอัปไฟล์ที่ไม่เกี่ยวกับเว็บขึ้นเซิร์ฟเวอร์
+          exclude: |
+            **/.git*
+            **/.git*/**
+            **/.github/**
+            README.md
+            .gitignore
