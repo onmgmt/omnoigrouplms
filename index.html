@@ -7,8 +7,6 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@400;500;600;700;800&family=Sarabun:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-<!-- Cloudflare Stream Player SDK -->
-<script src="https://embed.cloudflarestream.com/embed/sdk.latest.js"></script>
 <style>
 :root{
   --navy:#003149;--blue:#6a9dbd;--maroon:#7a1315;--red:#ed1c24;--cream:#fff0d8;--ink:#0b2433;
@@ -122,28 +120,16 @@ main{flex:1;width:100%;max-width:1160px;margin:0 auto;padding:30px 24px 60px}
 .l-info .m{font-size:12px;color:#8a99a2;margin-top:1px}
 .l-state{font-size:18px;flex:none}
 .player-wrap{background:#fff;border-radius:16px;box-shadow:var(--shadow);overflow:hidden;border:1px solid #eef2f5}
-.cf-frame{position:relative;aspect-ratio:16/9;background:#000;overflow:hidden}
-.cf-frame iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
-.cf-shield{position:absolute;inset:0;z-index:4}
-.screen{position:relative;aspect-ratio:16/9;background:radial-gradient(circle at 50% 40%,#073a55,#001824);display:flex;align-items:center;justify-content:center;overflow:hidden}
-.screen .mascot{width:150px;opacity:.95;transition:.4s}
-.screen.playing .mascot{animation:bob 2.4s ease-in-out infinite}
-@keyframes bob{0%,100%{transform:translateY(0) rotate(-2deg)}50%{transform:translateY(-12px) rotate(2deg)}}
-.screen .vtitle{position:absolute;top:16px;left:18px;color:#fff;font-family:'Prompt';font-weight:600;font-size:15px;text-shadow:0 2px 8px rgba(0,0,0,.5);max-width:70%}
-.demo-flag{position:absolute;top:16px;right:18px;color:#fff;font-size:11px;font-family:'Prompt';background:rgba(0,0,0,.45);padding:4px 10px;border-radius:20px}
-.big-play{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(0,12,20,.35);z-index:5}
-.big-play button{width:84px;height:84px;border-radius:50%;background:var(--red);color:#fff;font-size:30px;display:flex;align-items:center;justify-content:center;box-shadow:0 10px 30px rgba(0,0,0,.4);padding-left:5px;transition:.15s}
-.big-play button:hover{transform:scale(1.08)}
+.vid-frame{position:relative;aspect-ratio:16/9;background:#000;overflow:hidden}
+.vid-frame iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+.novideo{position:relative;aspect-ratio:16/9;background:radial-gradient(circle at 50% 40%,#073a55,#001824);display:flex;flex-direction:column;align-items:center;justify-content:center;overflow:hidden;text-align:center;padding:20px}
+.novideo .mascot-still{width:110px;opacity:.9;margin-bottom:14px}
+.novideo .vtitle{position:absolute;top:16px;left:18px;color:#fff;font-family:'Prompt';font-weight:600;font-size:15px;text-shadow:0 2px 8px rgba(0,0,0,.5);max-width:70%}
+.novideo .msg{color:#fff;opacity:.85;font-size:14px;line-height:1.6}
 .finished-ov{position:absolute;inset:0;background:rgba(0,24,36,.88);color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;z-index:8;text-align:center;padding:20px}
 .finished-ov .big{font-size:54px}
 .finished-ov h3{font-size:22px}
 .controls{padding:14px 18px;background:#fff}
-.seekbar{height:9px;background:#e7edf1;border-radius:20px;position:relative;overflow:hidden;cursor:not-allowed}
-.seekbar > i{position:absolute;left:0;top:0;bottom:0;background:linear-gradient(90deg,var(--blue),var(--red));border-radius:20px;width:0}
-.ctrl-row{display:flex;align-items:center;gap:14px;margin-top:12px}
-.ctrl-row button.play{width:44px;height:44px;border-radius:50%;background:var(--navy);color:#fff;font-size:16px;flex:none}
-.ctrl-row .time{font-size:13px;color:#5b6c75;font-variant-numeric:tabular-nums;font-weight:500}
-.ctrl-row .lockmsg{margin-left:auto;display:flex;align-items:center;gap:7px;font-size:12.5px;color:var(--maroon);background:#fdecec;padding:6px 12px;border-radius:20px;font-weight:600}
 .speed-note{font-size:12px;color:#9aa8b0;margin-top:10px;text-align:center}
 .sidebox{background:#fff;border-radius:16px;box-shadow:var(--shadow);padding:20px;border:1px solid #eef2f5}
 .sidebox h4{font-family:'Prompt';color:var(--navy);font-size:16px;margin-bottom:10px}
@@ -196,8 +182,11 @@ td .who .avatar{width:32px;height:32px;font-size:13px}
 .input{width:100%;padding:11px 14px;border:1.5px solid var(--line);border-radius:11px;font-size:14.5px;font-family:inherit;background:#fbfcfd}
 .input:focus{outline:none;border-color:var(--blue);background:#fff;box-shadow:0 0 0 3px rgba(106,157,189,.18)}
 label.lab{display:block;font-size:13px;font-weight:600;color:var(--navy);margin-bottom:6px}
-.lesson-row{display:grid;grid-template-columns:26px 1fr 1fr auto;gap:8px;align-items:center;margin-bottom:8px}
-.lesson-row .ln{width:26px;height:26px;border-radius:50%;background:var(--navy);color:#fff;display:flex;align-items:center;justify-content:center;font-family:'Prompt';font-weight:700;font-size:12px}
+.lesson-row{border:1px solid var(--line);border-radius:12px;padding:10px 12px 12px;margin-bottom:8px}
+.lesson-row .row1{display:flex;align-items:center;gap:8px;margin-bottom:8px}
+.lesson-row .row1 .input{flex:1}
+.lesson-row .row2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.lesson-row .ln{width:26px;height:26px;border-radius:50%;background:var(--navy);color:#fff;display:flex;align-items:center;justify-content:center;font-family:'Prompt';font-weight:700;font-size:12px;flex:none}
 .toast{position:fixed;bottom:26px;left:50%;transform:translateX(-50%) translateY(120px);background:var(--navy);color:#fff;padding:14px 24px;border-radius:14px;box-shadow:var(--shadow-lg);font-weight:600;z-index:100;transition:.35s;display:flex;align-items:center;gap:10px}
 .toast.show{transform:translateX(-50%) translateY(0)}
 .toast.ok{background:var(--ok)}
@@ -207,11 +196,18 @@ label.lab{display:block;font-size:13px;font-weight:600;color:var(--navy);margin-
 .up-item .ic{font-size:22px}
 .up-item .t{flex:1;font-size:14px;font-weight:600;color:var(--navy)}
 .up-item .t small{display:block;font-weight:400;color:#9aa8b0;font-size:12px}
-.cf-tag{font-size:10px;font-weight:700;font-family:'Prompt';padding:2px 7px;border-radius:6px}
-.cf-on{background:#fbe9ea;color:var(--red)}
-.cf-off{background:#eef2f5;color:#9aa8b0}
+.vid-tag{font-size:10px;font-weight:700;font-family:'Prompt';padding:2px 7px;border-radius:6px}
+.vid-on{background:#e3f6ea;color:var(--ok)}
+.vid-off{background:#eef2f5;color:#9aa8b0}
+.badge.locked{background:#eef2f5;color:#9aa8b0}
+.chk-list{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:6px}
+.chk-item{display:flex;align-items:center;gap:7px;border:1.5px solid var(--line);border-radius:10px;padding:8px 12px;font-size:13.5px;cursor:pointer;transition:.12s}
+.chk-item input{width:16px;height:16px;accent-color:var(--navy)}
+.chk-item.on{border-color:var(--navy);background:#eaf3f9}
+.pw-box{background:#fff8e6;border:1.5px solid #f0d382;border-radius:12px;padding:14px 16px;margin-bottom:20px;font-size:13.5px;color:#6b5116;line-height:1.7}
+.pw-box code{background:#fff;padding:2px 8px;border-radius:6px;border:1px solid #f0d382;font-weight:700;color:#4a3a0f}
 @media(max-width:900px){.login-card{grid-template-columns:1fr}.login-art{display:none}.detail-grid{grid-template-columns:1fr}.cols-3,.cols-4{grid-template-columns:1fr 1fr}.cols-2{grid-template-columns:1fr}}
-@media(max-width:560px){.cols-3,.cols-4,.cols-2{grid-template-columns:1fr}.form-row{grid-template-columns:1fr}.lesson-row{grid-template-columns:1fr}main{padding:20px 16px 50px}.user-box .meta{display:none}}
+@media(max-width:560px){.cols-3,.cols-4,.cols-2{grid-template-columns:1fr}.form-row{grid-template-columns:1fr}.lesson-row .row2{grid-template-columns:1fr}main{padding:20px 16px 50px}.user-box .meta{display:none}}
 </style>
 </head>
 <body>
@@ -235,7 +231,6 @@ label.lab{display:block;font-size:13px;font-weight:600;color:var(--navy);margin-
         <div class="login-err" id="lerr"></div>
         <button class="btn block" type="submit">เข้าสู่ระบบ</button>
       </form>
-      <div class="demo-accts"><p>บัญชีทดลอง (คลิกเพื่อกรอกอัตโนมัติ)</p><div id="demoChips"></div></div>
     </div>
   </div>
 </section>
@@ -260,493 +255,648 @@ label.lab{display:block;font-size:13px;font-weight:600;color:var(--navy);margin-
 
 <script>
 /* ============================================================
-   Omnoi Academy LMS — Frontend MVP
-   - ข้อมูลผู้ใช้/คอร์ส/คะแนน เก็บใน localStorage (ยังไม่มี backend)
-   - วิดีโอเล่นผ่าน Cloudflare Stream (กรอก Video UID) + บังคับห้ามกรอ
-   - คอร์สที่ยังไม่มี UID จะใช้ player จำลองเพื่อสาธิต
+   Omnoi Academy LMS — Frontend (PHP + MySQL backend)
+   - ผู้ใช้/แผนก/คอร์ส/บทเรียน/คะแนน/ล็อก เก็บใน MySQL ผ่าน api/*.php ทั้งหมด
+   - วิดีโอฝังจาก Google Drive (ผู้เรียนกดยืนยัน "ดูจบแล้ว" เองเพื่อปลดล็อกบทถัดไป ไม่มีระบบล็อกกรอ/ล็อกข้าม)
+   - คอร์สมี Level ต่อแผนก ต้องผ่าน Level ก่อนหน้าก่อน (บังคับจริงฝั่งเซิร์ฟเวอร์ ฝั่งหน้าเว็บแค่แสดงผล)
    ============================================================ */
 
-const TRACKS = {
-  sales:{name:'ฝ่ายขาย',icon:'🤝',color:'#ed1c24'},
-  parts:{name:'อะไหล่',icon:'⚙️',color:'#6a9dbd'},
-  tech:{name:'ช่าง',icon:'🔧',color:'#003149'},
-  other:{name:'อื่นๆ',icon:'📋',color:'#7a1315'},
-};
-
-const USERS = [
-  {id:'somchai',pass:'1234',name:'สมชาย ใจดี',track:'sales',role:'emp',dept:'พนักงานขายอาวุโส'},
-  {id:'nattaya',pass:'1234',name:'ณัฐญา ศรีสุข',track:'parts',role:'emp',dept:'เจ้าหน้าที่คลังอะไหล่'},
-  {id:'weera',pass:'1234',name:'วีระ มั่นคง',track:'tech',role:'emp',dept:'ช่างเทคนิค'},
-  {id:'ploy',pass:'1234',name:'พลอย พงษ์ไพร',track:'other',role:'emp',dept:'ฝ่ายบุคคล'},
-  {id:'admin',pass:'admin',name:'ผู้ดูแลระบบ',track:null,role:'admin',dept:'L&D / HR'},
-];
-
-// lessons: {title, dur(วินาที, สำหรับ player จำลอง), cfUid(Cloudflare Stream Video UID)}
-const DEFAULT_COURSES = [
-  {id:'c1',track:'sales',title:'เทคนิคการปิดการขายขั้นเทพ',icon:'💰',color:'#ed1c24',
-   desc:'ทักษะการนำเสนอ จับสัญญาณซื้อ และปิดการขายอย่างมืออาชีพ',
-   lessons:[{title:'บทที่ 1: เข้าใจความต้องการลูกค้า',dur:25,cfUid:''},{title:'บทที่ 2: การนำเสนอสินค้าให้โดนใจ',dur:30,cfUid:''},{title:'บทที่ 3: เทคนิคปิดการขาย',dur:28,cfUid:''}],
-   quiz:[
-     {q:'ขั้นตอนแรกของการขายที่ดีคืออะไร?',opts:['เสนอราคาทันที','เข้าใจความต้องการลูกค้า','ลดราคาให้มากที่สุด','พูดให้เยอะที่สุด'],answer:1},
-     {q:'"สัญญาณซื้อ" (Buying Signal) หมายถึงอะไร?',opts:['ลูกค้าเดินออกจากร้าน','ลูกค้าเริ่มถามรายละเอียด เงื่อนไข การผ่อน','ลูกค้าเงียบ','พนักงานเสนอโปรโมชั่น'],answer:1},
-     {q:'เมื่อลูกค้าลังเล ควรทำอย่างไร?',opts:['กดดันให้รีบตัดสินใจ','รับฟังข้อกังวลและให้ข้อมูลเพิ่ม','เปลี่ยนไปคุยลูกค้าคนอื่น','ยกเลิกการขาย'],answer:1},
-     {q:'การปิดการขายที่ดีควรจบด้วยอะไร?',opts:['ปล่อยให้ลูกค้าคิดเอง','สรุปข้อตกลงและขั้นตอนถัดไปอย่างชัดเจน','ไม่ต้องติดตามผล','ขึ้นราคา'],answer:1}]},
-  {id:'c2',track:'sales',title:'การบริการลูกค้าและงานหลังการขาย',icon:'⭐',color:'#7a1315',
-   desc:'สร้างความประทับใจ จัดการข้อร้องเรียน และรักษาฐานลูกค้า',
-   lessons:[{title:'บทที่ 1: หัวใจของงานบริการ',dur:22,cfUid:''},{title:'บทที่ 2: รับมือลูกค้าโกรธอย่างมืออาชีพ',dur:26,cfUid:''}],
-   quiz:[
-     {q:'เมื่อลูกค้าโกรธ สิ่งแรกที่ควรทำคือ?',opts:['เถียงกลับ','ตั้งใจฟังและแสดงความเข้าใจ','โอนสายให้คนอื่น','วางสาย'],answer:1},
-     {q:'งานหลังการขายสำคัญอย่างไร?',opts:['ไม่สำคัญ','สร้างลูกค้าประจำและการบอกต่อ','เสียเวลา','เพิ่มต้นทุน'],answer:1},
-     {q:'การติดตามผลลูกค้าควรทำเมื่อใด?',opts:['ไม่ต้องทำ','หลังการขายตามรอบที่เหมาะสม','เฉพาะตอนมีโปร','หลังลูกค้าร้องเรียน'],answer:1}]},
-  {id:'c3',track:'parts',title:'ระบบจัดการคลังอะไหล่ (WMS)',icon:'📦',color:'#6a9dbd',
-   desc:'การรับ-จ่าย จัดเก็บ และตรวจนับสต็อกอะไหล่อย่างเป็นระบบ',
-   lessons:[{title:'บทที่ 1: หลักการจัดเก็บ FIFO/FEFO',dur:24,cfUid:''},{title:'บทที่ 2: การรับเข้าและตรวจสอบอะไหล่',dur:27,cfUid:''},{title:'บทที่ 3: การตรวจนับและกระทบยอด',dur:23,cfUid:''}],
-   quiz:[
-     {q:'หลักการ FIFO หมายถึงอะไร?',opts:['ของใหม่จ่ายก่อน','ของเข้าก่อนจ่ายก่อน','จ่ายแบบสุ่ม','ของแพงจ่ายก่อน'],answer:1},
-     {q:'เมื่อรับอะไหล่เข้าคลัง ต้องตรวจสอบอะไรเป็นอันดับแรก?',opts:['สีของกล่อง','จำนวนและรหัสตรงกับใบสั่งซื้อ','น้ำหนักรวม','ยี่ห้อรถขนส่ง'],answer:1},
-     {q:'การตรวจนับสต็อก (Stock Count) มีไว้เพื่ออะไร?',opts:['เพิ่มงานให้พนักงาน','กระทบยอดของจริงกับระบบ','ลดจำนวนสินค้า','ตกแต่งคลัง'],answer:1}]},
-  {id:'c4',track:'parts',title:'ความรู้พื้นฐานอะไหล่ยานยนต์',icon:'🔩',color:'#003149',
-   desc:'รู้จักประเภทอะไหล่ รหัสสินค้า และการเทียบรุ่น',
-   lessons:[{title:'บทที่ 1: ประเภทอะไหล่หลัก',dur:20,cfUid:''},{title:'บทที่ 2: การอ่านรหัสและเทียบรุ่น',dur:25,cfUid:''}],
-   quiz:[
-     {q:'อะไหล่สิ้นเปลือง (Consumable) คือข้อใด?',opts:['เครื่องยนต์','น้ำมันเครื่อง/ไส้กรอง','ตัวถัง','เกียร์'],answer:1},
-     {q:'รหัส Part Number ใช้เพื่ออะไร?',opts:['ตกแต่ง','ระบุชิ้นส่วนได้ถูกต้องแม่นยำ','คิดราคาเล่นๆ','ไม่มีประโยชน์'],answer:1},
-     {q:'การเทียบรุ่น (Cross-reference) ช่วยเรื่องใด?',opts:['หาอะไหล่ทดแทนที่ใช้ร่วมกันได้','เพิ่มราคา','ลดคุณภาพ','ทำให้ลูกค้าสับสน'],answer:0}]},
-  {id:'c5',track:'tech',title:'มาตรฐานการซ่อมบำรุงและความปลอดภัย',icon:'🛠️',color:'#003149',
-   desc:'ขั้นตอนการซ่อมตามมาตรฐาน การใช้เครื่องมือ และความปลอดภัยในงานช่าง',
-   lessons:[{title:'บทที่ 1: ความปลอดภัยในโรงซ่อม (Safety First)',dur:26,cfUid:''},{title:'บทที่ 2: การใช้เครื่องมือวัดอย่างถูกต้อง',dur:30,cfUid:''},{title:'บทที่ 3: ขั้นตอนการซ่อมตามมาตรฐาน',dur:28,cfUid:''}],
-   quiz:[
-     {q:'อุปกรณ์ป้องกันส่วนบุคคล (PPE) ที่ช่างต้องใส่เสมอคือ?',opts:['ไม่จำเป็น','แว่นตา ถุงมือ รองเท้านิรภัย','เสื้อสูท','หมวกแฟชั่น'],answer:1},
-     {q:'ก่อนซ่อมระบบไฟฟ้าควรทำอะไรก่อน?',opts:['เปิดไฟไว้','ตัด/ปลดแหล่งจ่ายไฟ','ราดน้ำ','ใส่ถุงมือผ้า'],answer:1},
-     {q:'เครื่องมือวัดควรได้รับการ?',opts:['สอบเทียบ (Calibrate) ตามรอบ','ทิ้งไว้เฉยๆ','ใช้จนพัง','ดัดแปลงเอง'],answer:0},
-     {q:'เมื่อพบความผิดปกติที่อาจอันตราย ควร?',opts:['เพิกเฉย','หยุดงานและรายงานหัวหน้าทันที','ซ่อมลวกๆ','ปิดบัง'],answer:1}]},
-  {id:'c6',track:'other',title:'วัฒนธรรมองค์กรและจรรยาบรรณ Omnoi',icon:'🏛️',color:'#7a1315',
-   desc:'ค่านิยม จริยธรรม และแนวปฏิบัติของพนักงาน Omnoi Group',
-   lessons:[{title:'บทที่ 1: ค่านิยมและวิสัยทัศน์องค์กร',dur:20,cfUid:''},{title:'บทที่ 2: จรรยาบรรณและการต่อต้านทุจริต',dur:24,cfUid:''}],
-   quiz:[
-     {q:'หากได้รับของกำนัลมูลค่าสูงจากคู่ค้า ควรทำอย่างไร?',opts:['รับไว้เงียบๆ','แจ้งหัวหน้า/ปฏิบัติตามนโยบาย','ขอเพิ่ม','ขายต่อ'],answer:1},
-     {q:'ค่านิยมหลักของ Omnoi เน้นเรื่องใด?',opts:['ความน่าเชื่อถือและการเติบโตร่วมกัน','ทำงานคนเดียว','แข่งกันเอง','ปกปิดข้อมูล'],answer:0},
-     {q:'การรักษาความลับของบริษัทสำคัญอย่างไร?',opts:['ไม่สำคัญ','ปกป้องผลประโยชน์องค์กรและลูกค้า','เอาไว้คุยเล่น','โพสต์โซเชียลได้'],answer:1}]},
-];
-
 const PASS_MARK = 80;
-const LS_KEY='omnoi_lms_progress_v1';
-const COURSES_KEY='omnoi_lms_courses_v1';
-const CFG_KEY='omnoi_lms_cfg_v1';
 
-let COURSES, PROGRESS={}, CFG={customerCode:''};
-
-function loadCourses(){try{COURSES=JSON.parse(localStorage.getItem(COURSES_KEY));}catch(e){} if(!COURSES||!COURSES.length)COURSES=JSON.parse(JSON.stringify(DEFAULT_COURSES));}
-function saveCourses(){try{localStorage.setItem(COURSES_KEY,JSON.stringify(COURSES));}catch(e){}}
-function loadCfg(){try{const c=JSON.parse(localStorage.getItem(CFG_KEY));if(c)CFG=c;}catch(e){}}
-function saveCfg(){try{localStorage.setItem(CFG_KEY,JSON.stringify(CFG));}catch(e){}}
-function loadProgress(){try{PROGRESS=JSON.parse(localStorage.getItem(LS_KEY))||{};}catch(e){PROGRESS={};}}
-function saveProgress(){try{localStorage.setItem(LS_KEY,JSON.stringify(PROGRESS));}catch(e){}}
-function seedDemoProgress(){
-  if(Object.keys(PROGRESS).length)return;
-  PROGRESS={
-    somchai:{c1:{watched:[true,true,true],score:95,attempts:1,lastDate:'2026-06-20'},c2:{watched:[true,false],score:null,attempts:0,lastDate:'2026-06-25'}},
-    nattaya:{c3:{watched:[true,true,true],score:88,attempts:2,lastDate:'2026-06-22'},c4:{watched:[true,true],score:67,attempts:1,lastDate:'2026-06-24'}},
-    weera:{c5:{watched:[true,true,false],score:null,attempts:0,lastDate:'2026-06-26'}},
-    ploy:{c6:{watched:[true,true],score:100,attempts:1,lastDate:'2026-06-19'}},
-  };
-  saveProgress();
-}
-function getProg(uid,cid){
-  if(!PROGRESS[uid])PROGRESS[uid]={};
-  const c=COURSES.find(x=>x.id===cid);
-  if(!PROGRESS[uid][cid])PROGRESS[uid][cid]={watched:c.lessons.map(()=>false),score:null,attempts:0,lastDate:null};
-  const w=PROGRESS[uid][cid].watched;
-  while(w.length<c.lessons.length)w.push(false);
-  return PROGRESS[uid][cid];
+/* ---------- esc: กัน stored XSS ก่อน render ข้อความที่แอดมิน/ผู้ใช้กรอกด้วย innerHTML ---------- */
+function esc(s){
+  return String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 }
 
-// Cloudflare Stream iframe src
-function streamSrc(uid){
-  const base = CFG.customerCode
-    ? `https://customer-${CFG.customerCode}.cloudflarestream.com/${uid}/iframe`
-    : `https://iframe.cloudflarestream.com/${uid}`;
-  return base + '?controls=false&preload=metadata';
+/* ---------- api(): fetch wrapper พร้อม CSRF header + จัดการ error ให้เป็น Error(message,status) ---------- */
+async function api(path, opts = {}) {
+  const o = { method: 'GET', credentials: 'same-origin', headers: {}, ...opts };
+  if (o.body && typeof o.body !== 'string') {
+    o.headers = { ...o.headers, 'Content-Type': 'application/json' };
+    o.body = JSON.stringify(o.body);
+  }
+  if (o.method !== 'GET' && CSRF) o.headers = { ...o.headers, 'X-CSRF-Token': CSRF };
+  const res = await fetch('api/' + path, o);
+  let data = null;
+  try { data = await res.json(); } catch (e) {}
+  if (!res.ok) {
+    const err = new Error((data && data.error) || ('เกิดข้อผิดพลาด (' + res.status + ')'));
+    err.status = res.status;
+    err.data = data;
+    throw err;
+  }
+  return data;
 }
 
-let CURRENT=null, nav={};
+/* ---------- Redirect: สัญญาณให้ router go() ทำการนำทางแทน แทนการเรียก go() ซ้อนภายใน view function ---------- */
+class Redirect {
+  constructor(screen, opt = {}) { this.screen = screen; this.opt = opt; }
+}
+
+/* Google Drive embed/download src (ต้องแชร์ไฟล์เป็น "ทุกคนที่มีลิงก์ - ดูได้" ก่อน) */
+function driveEmbedSrc(id){ return `https://drive.google.com/file/d/${id}/preview`; }
+function driveDownloadSrc(id){ return `https://drive.google.com/uc?export=download&id=${id}`; }
+
+let CURRENT = null, CSRF = null, nav = {};
 
 /* ---------- Login ---------- */
-function renderDemoChips(){
-  document.getElementById('demoChips').innerHTML = USERS.map(u=>{
-    const t=u.role==='admin'?'แอดมิน':TRACKS[u.track].name;
-    return `<div class="demo-chip" onclick="fillLogin('${u.id}','${u.pass}')"><b>${u.id}</b><span>${t} · ${u.pass}</span></div>`;
-  }).join('');
-}
-function fillLogin(id,pass){document.getElementById('luser').value=id;document.getElementById('lpass').value=pass;document.getElementById('lerr').textContent='';}
-document.getElementById('loginForm').addEventListener('submit',e=>{
+function renderLoginErr(msg){ document.getElementById('lerr').textContent = msg; }
+document.getElementById('loginForm').addEventListener('submit', async e => {
   e.preventDefault();
-  const id=document.getElementById('luser').value.trim().toLowerCase();
-  const pass=document.getElementById('lpass').value;
-  const u=USERS.find(x=>x.id===id&&x.pass===pass);
-  if(!u){document.getElementById('lerr').textContent='✕ ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง';return;}
-  CURRENT=u;startApp();
+  const username = document.getElementById('luser').value.trim();
+  const password = document.getElementById('lpass').value;
+  renderLoginErr('');
+  try {
+    const res = await api('auth_login.php', { method: 'POST', body: { username, password } });
+    CURRENT = res.user; CSRF = res.csrf;
+    startApp();
+  } catch (e) {
+    renderLoginErr('✕ ' + (e.message || 'เข้าสู่ระบบไม่สำเร็จ'));
+  }
 });
 function startApp(){
   document.getElementById('login').classList.add('hidden');
   document.getElementById('app').classList.remove('hidden');
-  document.getElementById('ubName').textContent=CURRENT.name;
-  document.getElementById('ubTrack').textContent=CURRENT.role==='admin'?CURRENT.dept:TRACKS[CURRENT.track].name;
-  document.getElementById('ubAvatar').textContent=CURRENT.name.charAt(0);
-  const rp=document.getElementById('ubRole');
-  rp.textContent=CURRENT.role==='admin'?'ADMIN':'พนักงาน';
-  rp.className='role-pill'+(CURRENT.role==='admin'?' admin':'');
+  document.getElementById('ubName').textContent = CURRENT.full_name;
+  document.getElementById('ubTrack').textContent = CURRENT.role === 'admin'
+    ? 'L&D / HR'
+    : ((CURRENT.departments || []).map(d => d.icon + ' ' + d.name).join(' · ') || 'ยังไม่ได้สังกัดแผนก');
+  document.getElementById('ubAvatar').textContent = CURRENT.full_name.charAt(0);
+  const rp = document.getElementById('ubRole');
+  rp.textContent = CURRENT.role === 'admin' ? 'ADMIN' : 'พนักงาน';
+  rp.className = 'role-pill' + (CURRENT.role === 'admin' ? ' admin' : '');
   buildNav();
-  go(CURRENT.role==='admin'?'admin':'dash');
+  go(CURRENT.role === 'admin' ? 'admin' : 'dash');
 }
-function logout(){stopPlayback();CURRENT=null;document.getElementById('app').classList.add('hidden');document.getElementById('login').classList.remove('hidden');document.getElementById('loginForm').reset();document.getElementById('lerr').textContent='';}
+function resetToLogin(){
+  CURRENT = null; CSRF = null;
+  document.getElementById('app').classList.add('hidden');
+  document.getElementById('login').classList.remove('hidden');
+  document.getElementById('loginForm').reset();
+  renderLoginErr('');
+}
+async function logout(){
+  try { await api('auth_logout.php', { method: 'POST' }); } catch (e) {}
+  resetToLogin();
+}
 function buildNav(){
-  const items=CURRENT.role==='admin'?[['admin','แดชบอร์ด'],['report','รายงานคะแนน'],['manage','จัดการคอร์ส']]:[['dash','คอร์สของฉัน'],['myscore','ผลการเรียน']];
-  document.getElementById('navLinks').innerHTML=items.map(([s,l])=>`<button class="btn ghost sm navbtn" data-s="${s}" style="color:#fff;border-color:rgba(255,255,255,.25)" onclick="go('${s}')">${l}</button>`).join('');
+  const items = CURRENT.role === 'admin'
+    ? [['admin','แดชบอร์ด'],['report','รายงานคะแนน'],['manage','จัดการคอร์ส'],['depts','จัดการแผนก'],['users','จัดการผู้ใช้'],['logs','ประวัติการใช้งาน']]
+    : [['dash','คอร์สของฉัน'],['myscore','ผลการเรียน']];
+  document.getElementById('navLinks').innerHTML = items.map(([s,l]) =>
+    `<button class="btn ghost sm navbtn" data-s="${s}" style="color:#fff;border-color:rgba(255,255,255,.25)" onclick="go('${s}')">${l}</button>`
+  ).join('');
 }
-function markNav(s){document.querySelectorAll('.navbtn').forEach(b=>{b.style.background=b.dataset.s===s?'var(--red)':'transparent';b.style.borderColor=b.dataset.s===s?'var(--red)':'rgba(255,255,255,.25)';});}
+function markNav(s){
+  document.querySelectorAll('.navbtn').forEach(b => {
+    b.style.background = b.dataset.s === s ? 'var(--red)' : 'transparent';
+    b.style.borderColor = b.dataset.s === s ? 'var(--red)' : 'rgba(255,255,255,.25)';
+  });
+}
 
 /* ---------- Router ---------- */
-function go(screen,opt={}){
-  stopPlayback();nav={screen,...opt};
-  const v=document.getElementById('view');window.scrollTo(0,0);markNav(screen);
-  if(screen==='dash')v.innerHTML=viewDash();
-  else if(screen==='myscore')v.innerHTML=viewMyScore();
-  else if(screen==='course')v.innerHTML=viewCourse(opt.courseId);
-  else if(screen==='player'){v.innerHTML=viewPlayer(opt.courseId,opt.lessonIdx);initPlayer(opt.courseId,opt.lessonIdx);}
-  else if(screen==='quiz')v.innerHTML=viewQuiz(opt.courseId);
-  else if(screen==='result')v.innerHTML=viewResult(opt.courseId);
-  else if(screen==='admin')v.innerHTML=viewAdmin();
-  else if(screen==='report')v.innerHTML=viewReport();
-  else if(screen==='manage')v.innerHTML=viewManage();
+let __navToken = 0;
+async function go(screen, opt = {}){
+  const myToken = ++__navToken;
+  nav = { screen, ...opt };
+  const v = document.getElementById('view');
+  window.scrollTo(0, 0);
+  markNav(screen);
+  v.innerHTML = '<div style="padding:60px;text-align:center;color:#9aa8b0">กำลังโหลด…</div>';
+  try {
+    let html = '';
+    if (screen === 'dash') html = await viewDash();
+    else if (screen === 'myscore') html = await viewMyScore();
+    else if (screen === 'course') html = await viewCourse(opt.courseId);
+    else if (screen === 'player') html = await viewPlayer(opt.courseId, opt.lessonId);
+    else if (screen === 'quiz') html = await viewQuiz(opt.courseId);
+    else if (screen === 'result') html = viewResult(opt.courseId);
+    else if (screen === 'admin') html = await viewAdmin();
+    else if (screen === 'report') html = await viewReport();
+    else if (screen === 'manage') html = await viewManage();
+    else if (screen === 'depts') html = await viewDepts();
+    else if (screen === 'users') html = await viewUsers();
+    else if (screen === 'logs') html = await viewLogs();
+    if (myToken !== __navToken) return; // ถูกแทนที่ด้วยการนำทางใหม่กว่าแล้ว
+    v.innerHTML = html;
+    if (screen === 'manage') renderLessonRows();
+  } catch (e) {
+    if (myToken !== __navToken) return;
+    if (e instanceof Redirect) { go(e.screen, e.opt); return; }
+    if (e.status === 401) { toast('เซสชันหมดอายุ กรุณาเข้าสู่ระบบใหม่'); resetToLogin(); return; }
+    v.innerHTML = `<div class="page-head"><h1>เกิดข้อผิดพลาด</h1><p>${esc(e.message || 'ไม่ทราบสาเหตุ')}</p></div>`;
+    toast(e.message || 'เกิดข้อผิดพลาด');
+  }
 }
 
 /* ---------- helpers ---------- */
-function fmtTime(s){s=s||0;const m=Math.floor(s/60),x=Math.floor(s%60);return `${m}:${String(x).padStart(2,'0')}`;}
-function courseTotalDur(c){return c.lessons.reduce((a,l)=>a+(l.dur||0),0);}
-function courseProgPct(uid,c){const p=getProg(uid,c.id);return Math.round(p.watched.filter(Boolean).length/c.lessons.length*100);}
-function allWatched(uid,c){return getProg(uid,c.id).watched.every(Boolean);}
-function courseStatus(uid,c){const p=getProg(uid,c.id);if(p.score!==null&&p.score>=PASS_MARK)return'done';if(p.score!==null&&p.score<PASS_MARK)return'fail';if(p.watched.some(Boolean))return'prog';return'new';}
-function toast(msg,ok=false){const t=document.getElementById('toast');t.innerHTML=(ok?'✓ ':'')+msg;t.className='toast show'+(ok?' ok':'');setTimeout(()=>t.className='toast',2600);}
-function shade(hex,p){const n=parseInt(hex.slice(1),16);let r=(n>>16)+Math.round(255*p/100),g=((n>>8)&255)+Math.round(255*p/100),b=(n&255)+Math.round(255*p/100);r=Math.max(0,Math.min(255,r));g=Math.max(0,Math.min(255,g));b=Math.max(0,Math.min(255,b));return'#'+((r<<16)|(g<<8)|b).toString(16).padStart(6,'0');}
+function toast(msg, ok = false){
+  const t = document.getElementById('toast');
+  t.innerHTML = (ok ? '✓ ' : '') + esc(msg);
+  t.className = 'toast show' + (ok ? ' ok' : '');
+  setTimeout(() => t.className = 'toast', 2600);
+}
+function shade(hex, p){
+  const n = parseInt(hex.slice(1), 16);
+  let r = (n >> 16) + Math.round(255 * p / 100), g = ((n >> 8) & 255) + Math.round(255 * p / 100), b = (n & 255) + Math.round(255 * p / 100);
+  r = Math.max(0, Math.min(255, r)); g = Math.max(0, Math.min(255, g)); b = Math.max(0, Math.min(255, b));
+  return '#' + ((r << 16) | (g << 8) | b).toString(16).padStart(6, '0');
+}
 
 /* ---------- Dashboard (พนักงาน) ---------- */
-function viewDash(){
-  const my=COURSES.filter(c=>c.track===CURRENT.track);
-  const done=my.filter(c=>courseStatus(CURRENT.id,c)==='done').length;
-  const inprog=my.filter(c=>['prog','fail'].includes(courseStatus(CURRENT.id,c))).length;
-  const avg=(()=>{const s=my.map(c=>getProg(CURRENT.id,c.id).score).filter(x=>x!==null);return s.length?Math.round(s.reduce((a,b)=>a+b,0)/s.length):'—';})();
-  return `<div class="page-head"><h1>สวัสดี, ${CURRENT.name.split(' ')[0]} 👋</h1>
-    <p>หลักสูตรสำหรับสายงาน <b style="color:var(--navy)">${TRACKS[CURRENT.track].icon} ${TRACKS[CURRENT.track].name}</b> — ดูวิดีโอให้จบแล้วทำแบบทดสอบเพื่อรับคะแนน</p></div>
-    <div class="grid cols-4" style="margin-bottom:28px">
-      <div class="stat accent"><div class="lab">หลักสูตรทั้งหมด</div><div class="num">${my.length}</div></div>
-      <div class="stat"><div class="lab">เรียนจบแล้ว</div><div class="num">${done}<small> / ${my.length}</small></div></div>
+async function viewDash(){
+  const [{ departments }, { courses }] = await Promise.all([api('departments_list.php'), api('courses_list.php')]);
+  const total = courses.length;
+  const done = courses.filter(c => c.completed).length;
+  const inprog = courses.filter(c => !c.completed && !c.locked && (c.lesson_watched > 0 || c.attempts > 0)).length;
+  const scored = courses.filter(c => c.best_score !== null).map(c => c.best_score);
+  const avg = scored.length ? Math.round(scored.reduce((a,b) => a+b, 0) / scored.length) : '—';
+  const deptNames = departments.map(d => `${d.icon} ${d.name}`).join(' · ') || '—';
+  const byDept = {};
+  courses.forEach(c => { (byDept[c.department_id] ||= []).push(c); });
+  const sections = departments.map(d => {
+    const cs = byDept[d.id] || [];
+    if (!cs.length) return '';
+    return `<div style="margin:26px 0 14px"><h2 style="font-size:18px;color:var(--navy);font-family:'Prompt'">${d.icon} ${esc(d.name)}</h2></div>
+      <div class="grid cols-3">${cs.map(courseCard).join('')}</div>`;
+  }).join('') || '<p style="color:#9aa8b0">ยังไม่มีหลักสูตรในแผนกของคุณ ติดต่อแอดมินเพื่อกำหนดแผนก</p>';
+  return `<div class="page-head"><h1>สวัสดี, ${esc(CURRENT.full_name.split(' ')[0])} 👋</h1>
+    <p>สังกัดแผนก <b style="color:var(--navy)">${esc(deptNames)}</b> — ดูวิดีโอให้จบแล้วทำแบบทดสอบเพื่อรับคะแนน</p></div>
+    <div class="grid cols-4" style="margin-bottom:10px">
+      <div class="stat accent"><div class="lab">หลักสูตรทั้งหมด</div><div class="num">${total}</div></div>
+      <div class="stat"><div class="lab">เรียนจบแล้ว</div><div class="num">${done}<small> / ${total}</small></div></div>
       <div class="stat"><div class="lab">กำลังเรียน</div><div class="num">${inprog}</div></div>
-      <div class="stat"><div class="lab">คะแนนเฉลี่ย</div><div class="num">${avg}<small>${avg==='—'?'':' %'}</small></div></div>
-    </div>
-    <div class="grid cols-3">${my.map(courseCard).join('')||'<p style="color:#9aa8b0">ยังไม่มีหลักสูตรในสายงานนี้</p>'}</div>`;
+      <div class="stat"><div class="lab">คะแนนเฉลี่ย</div><div class="num">${avg}<small>${avg === '—' ? '' : ' %'}</small></div></div>
+    </div>${sections}`;
 }
 function courseCard(c){
-  const pct=courseProgPct(CURRENT.id,c),st=courseStatus(CURRENT.id,c),p=getProg(CURRENT.id,c.id);
-  const badge=st==='done'?`<span class="badge done">✓ ผ่าน ${p.score}%</span>`:st==='fail'?`<span class="badge fail">ไม่ผ่าน ${p.score}%</span>`:st==='prog'?`<span class="badge prog">กำลังเรียน</span>`:`<span class="badge new">ใหม่</span>`;
-  return `<div class="card hover" onclick="go('course',{courseId:'${c.id}'})" style="cursor:pointer">
+  const pct = c.progress_pct;
+  let badge;
+  if (c.locked) badge = `<span class="badge locked">🔒 ล็อก (level ${c.level})</span>`;
+  else if (c.completed) badge = `<span class="badge done">✓ ผ่าน ${c.best_score}%</span>`;
+  else if (c.best_score !== null) badge = `<span class="badge fail">ไม่ผ่าน ${c.best_score}%</span>`;
+  else if (c.lesson_watched > 0) badge = `<span class="badge prog">กำลังเรียน</span>`;
+  else badge = `<span class="badge new">ใหม่</span>`;
+  const click = c.locked
+    ? `onclick="toast('คอร์สนี้ยังไม่ปลดล็อก ต้องผ่าน Level ${c.level - 1} ในแผนกเดียวกันก่อน')"`
+    : `onclick="go('course',{courseId:${c.id}})"`;
+  return `<div class="card hover" ${click} style="cursor:pointer;${c.locked ? 'opacity:.7' : ''}">
     <div class="course-thumb" style="background:linear-gradient(135deg,${c.color},${shade(c.color,-25)})">
-      <span class="tag">${TRACKS[c.track].name}</span><span class="icon">${c.icon}</span>
-      <span class="lessons-n">▶ ${c.lessons.length} บท</span></div>
-    <div class="course-body"><h3>${c.title}</h3><div class="desc">${c.desc}</div>
-      <div class="progress ${pct===100?'done':''}"><i style="width:${pct}%"></i></div>
+      <span class="tag">Lv.${c.level} · ${esc(c.department_name || '')}</span><span class="icon">${c.locked ? '🔒' : c.icon}</span>
+      <span class="lessons-n">▶ ${c.lesson_total} บท</span></div>
+    <div class="course-body"><h3>${esc(c.title)}</h3><div class="desc">${esc(c.description || '')}</div>
+      <div class="progress ${pct === 100 ? 'done' : ''}"><i style="width:${pct}%"></i></div>
       <div class="prow"><span>เรียนแล้ว ${pct}%</span>${badge}</div></div></div>`;
 }
 
 /* ---------- Course detail ---------- */
-function viewCourse(cid){
-  const c=COURSES.find(x=>x.id===cid),p=getProg(CURRENT.id,cid),watchedAll=allWatched(CURRENT.id,c);
-  const lessonsHtml=c.lessons.map((l,i)=>{
-    const done=p.watched[i],prevDone=i===0||p.watched[i-1],unlocked=done||prevDone;
-    const cls=done?'done':(prevDone&&!done?'current':'locked');
-    const click=unlocked?`onclick="go('player',{courseId:'${cid}',lessonIdx:${i}})"`:'';
-    const state=done?'✓':(unlocked?'▶':'🔒');
-    const src=l.cfUid?'<span class="cf-tag cf-on">Stream</span>':'<span class="cf-tag cf-off">ตัวอย่าง</span>';
-    return `<div class="lesson ${cls} ${unlocked?'clickable':'locked'}" ${click}>
-      <div class="l-num">${done?'✓':i+1}</div>
-      <div class="l-info"><div class="t">${l.title} ${src}</div>
-        <div class="m">${done?'ดูจบแล้ว':(unlocked?'พร้อมเรียน':'ดูบทก่อนหน้าให้จบก่อน')}</div></div>
+async function viewCourse(cid){
+  const { course: c, lessons, quiz_count, best_score, attempts, last_date } = await api('course_detail.php?id=' + cid);
+  const watchedAll = lessons.length > 0 && lessons.every(l => l.watched);
+  const lockedBanner = c.locked
+    ? `<div class="help-box" style="border-color:#f0b8b8;background:#fdecec;color:var(--maroon)">🔒 คอร์สนี้ยังไม่ปลดล็อก — ต้องเรียนและผ่านคอร์ส Level ${c.level - 1} ในแผนก ${esc(c.department_name)} ให้ผ่านเกณฑ์ก่อน</div>`
+    : '';
+  const lessonsHtml = lessons.map((l, i) => {
+    const done = l.watched, prevDone = i === 0 || lessons[i-1].watched, unlocked = !c.locked && (done || prevDone);
+    const cls = done ? 'done' : (prevDone && !done && !c.locked ? 'current' : 'locked');
+    const click = unlocked ? `onclick="go('player',{courseId:${cid},lessonId:${l.id}})"` : '';
+    const state = done ? '✓' : (unlocked ? '▶' : '🔒');
+    const src = l.drive_video_id ? '<span class="vid-tag vid-on">Google Drive</span>' : '<span class="vid-tag vid-off">ยังไม่มีวิดีโอ</span>';
+    const docLink = (done && l.drive_doc_id) ? ` <a href="#" onclick="event.stopPropagation();event.preventDefault();downloadDoc(${l.id},'${l.drive_doc_id}')" class="vid-tag vid-on" style="text-decoration:none">📄 เอกสาร</a>` : '';
+    return `<div class="lesson ${cls} ${unlocked ? 'clickable' : 'locked'}" ${click}>
+      <div class="l-num">${done ? '✓' : i+1}</div>
+      <div class="l-info"><div class="t">${esc(l.title)} ${src}${docLink}</div>
+        <div class="m">${done ? 'ดูจบแล้ว' : (unlocked ? 'พร้อมเรียน' : (c.locked ? 'คอร์สยังไม่ปลดล็อก' : 'ดูบทก่อนหน้าให้จบก่อน'))}</div></div>
       <div class="l-state">${state}</div></div>`;
   }).join('');
-  const quizBtn=watchedAll?`<button class="btn block" onclick="go('quiz',{courseId:'${cid}'})">📝 ${p.attempts>0?'ทำแบบทดสอบอีกครั้ง':'เริ่มทำแบบทดสอบ'}</button>`:`<button class="btn block" disabled>📝 ทำแบบทดสอบ (ดูวิดีโอให้ครบก่อน)</button>`;
-  const scoreRow=p.score!==null?`<div class="meta-row"><span>คะแนนล่าสุด</span><span style="color:${p.score>=PASS_MARK?'var(--ok)':'var(--red)'}">${p.score}% ${p.score>=PASS_MARK?'(ผ่าน)':'(ไม่ผ่าน)'}</span></div>`:`<div class="meta-row"><span>คะแนน</span><span style="color:#9aa8b0">ยังไม่ได้ทำ</span></div>`;
+  const quizBtn = c.locked
+    ? `<button class="btn block" disabled>📝 ทำแบบทดสอบ (คอร์สยังไม่ปลดล็อก)</button>`
+    : watchedAll
+      ? `<button class="btn block" onclick="go('quiz',{courseId:${cid}})">📝 ${attempts > 0 ? 'ทำแบบทดสอบอีกครั้ง' : 'เริ่มทำแบบทดสอบ'}</button>`
+      : `<button class="btn block" disabled>📝 ทำแบบทดสอบ (ดูวิดีโอให้ครบก่อน)</button>`;
+  const scoreRow = best_score !== null
+    ? `<div class="meta-row"><span>คะแนนล่าสุด</span><span style="color:${best_score >= PASS_MARK ? 'var(--ok)' : 'var(--red)'}">${best_score}% ${best_score >= PASS_MARK ? '(ผ่าน)' : '(ไม่ผ่าน)'}</span></div>`
+    : `<div class="meta-row"><span>คะแนน</span><span style="color:#9aa8b0">ยังไม่ได้ทำ</span></div>`;
+  const pct = lessons.length ? Math.round(lessons.filter(l => l.watched).length / lessons.length * 100) : 0;
   return `<div class="page-head"><div class="crumb" onclick="go('dash')">← กลับหน้าคอร์สของฉัน</div>
-    <h1>${c.icon} ${c.title}</h1><p>${c.desc}</p></div>
+    <h1>${c.icon} ${esc(c.title)}</h1><p>${esc(c.description || '')}</p></div>${lockedBanner}
     <div class="detail-grid">
-      <div class="lesson-list"><div class="lh">เนื้อหาบทเรียน (${c.lessons.length} บท)</div>${lessonsHtml}</div>
+      <div class="lesson-list"><div class="lh">เนื้อหาบทเรียน (${lessons.length} บท)</div>${lessonsHtml || '<div style="padding:20px;color:#9aa8b0">ยังไม่มีบทเรียน</div>'}</div>
       <div>
         <div class="sidebox" style="margin-bottom:18px"><h4>ความคืบหน้า</h4>
-          <div class="progress ${courseProgPct(CURRENT.id,c)===100?'done':''}" style="margin:6px 0 14px"><i style="width:${courseProgPct(CURRENT.id,c)}%"></i></div>
-          <div class="meta-row"><span>ดูวิดีโอ</span><span>${p.watched.filter(Boolean).length}/${c.lessons.length} บท</span></div>
+          <div class="progress ${pct === 100 ? 'done' : ''}" style="margin:6px 0 14px"><i style="width:${pct}%"></i></div>
+          <div class="meta-row"><span>ดูวิดีโอ</span><span>${lessons.filter(l => l.watched).length}/${lessons.length} บท</span></div>
           <div class="meta-row"><span>เกณฑ์ผ่าน</span><span>${PASS_MARK}%</span></div>${scoreRow}
-          <div class="meta-row"><span>ทำข้อสอบไป</span><span>${p.attempts} ครั้ง</span></div></div>
+          <div class="meta-row"><span>ทำข้อสอบไป</span><span>${attempts} ครั้ง</span></div></div>
         <div class="sidebox"><h4>แบบทดสอบท้ายคอร์ส</h4>
-          <p style="font-size:13px;color:#7c8b94;margin-bottom:14px">${c.quiz.length} ข้อ · ต้องดูวิดีโอครบทุกบทจึงจะทำได้</p>${quizBtn}</div>
+          <p style="font-size:13px;color:#7c8b94;margin-bottom:14px">${quiz_count} ข้อ · ต้องดูวิดีโอครบทุกบทจึงจะทำได้</p>${quizBtn}</div>
       </div></div>`;
 }
 
 /* ---------- Player ---------- */
-let player={timer:null,t:0,dur:0,cid:null,idx:null,playing:false,mode:'sim',cf:null,max:0};
-function stopPlayback(){
-  if(player.timer){clearInterval(player.timer);player.timer=null;}
-  if(player.cf){try{player.cf.pause();}catch(e){}}
-  player.cf=null;player.playing=false;
-  document.removeEventListener('visibilitychange',onVis);
-}
-function viewPlayer(cid,idx){
-  const c=COURSES.find(x=>x.id===cid),l=c.lessons[idx];
-  const finBlock=`<div class="finished-ov hidden" id="finOv"><div class="big">✓</div><h3>ดูจบแล้ว!</h3>
-      <p style="opacity:.8">คุณดูบทเรียนนี้ครบถ้วน</p>
+let currentPlayerLesson = null;
+async function viewPlayer(cid, lessonId){
+  const { course: c, lessons } = await api('course_detail.php?id=' + cid);
+  if (c.locked) throw new Redirect('course', { courseId: cid });
+  const idx = lessons.findIndex(l => l.id === lessonId);
+  if (idx === -1) throw new Redirect('course', { courseId: cid });
+  const l = lessons[idx];
+  currentPlayerLesson = { id: l.id, drive_doc_id: l.drive_doc_id };
+  const already = l.watched;
+  const finBlock = `<div class="finished-ov${already ? '' : ' hidden'}" id="finOv"><div class="big">✓</div><h3>ดูจบแล้ว!</h3>
+      <p style="opacity:.8">คุณทำเครื่องหมายว่าดูบทเรียนนี้จบแล้ว</p>
       <div style="display:flex;gap:10px;flex-wrap:wrap;justify-content:center">
-        ${idx<c.lessons.length-1?`<button class="btn" onclick="go('player',{courseId:'${cid}',lessonIdx:${idx+1}})">บทถัดไป →</button>`:`<button class="btn" onclick="afterLastLesson('${cid}')">ไปทำแบบทดสอบ 📝</button>`}
-        <button class="btn ghost" style="color:#fff;border-color:rgba(255,255,255,.4)" onclick="go('course',{courseId:'${cid}'})">กลับหน้าคอร์ส</button></div></div>`;
-  const screen = l.cfUid
-    ? `<div class="cf-frame"><iframe id="cfFrame" src="${streamSrc(l.cfUid)}" allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture;" allowfullscreen></iframe>
-         <div class="cf-shield"></div>${finBlock}</div>`
-    : `<div class="screen" id="screen"><div class="vtitle">${c.title}</div><div class="demo-flag">โหมดสาธิต (ยังไม่ผูกวิดีโอจริง)</div>
-         <img src="logo.png" class="mascot" alt=""><div class="big-play" id="bigPlay"><button onclick="togglePlay()">▶</button></div>${finBlock}</div>`;
-  return `<div class="page-head"><div class="crumb" onclick="go('course',{courseId:'${cid}'})">← ${c.title}</div>
-    <h1 style="font-size:24px">${l.title}</h1><p>บทที่ ${idx+1} จาก ${c.lessons.length}</p></div>
+        ${idx < lessons.length-1
+          ? `<button class="btn" onclick="go('player',{courseId:${cid},lessonId:${lessons[idx+1].id}})">บทถัดไป →</button>`
+          : `<button class="btn" onclick="afterLastLesson(${cid})">ไปทำแบบทดสอบ 📝</button>`}
+        <button class="btn ghost" style="color:#fff;border-color:rgba(255,255,255,.4)" onclick="go('course',{courseId:${cid}})">กลับหน้าคอร์ส</button></div></div>`;
+  const screen = l.drive_video_id
+    ? `<div class="vid-frame"><iframe id="driveFrame" src="${driveEmbedSrc(l.drive_video_id)}" allow="autoplay" allowfullscreen></iframe>${finBlock}</div>`
+    : `<div class="novideo" id="screen"><div class="vtitle">${esc(c.title)}</div>
+         <img src="logo.png" class="mascot-still" alt=""><p class="msg">ยังไม่ได้ผูกวิดีโอ Google Drive สำหรับบทนี้<br><small>แอดมินเพิ่มลิงก์วิดีโอได้ที่เมนู "จัดการคอร์ส"</small></p>${finBlock}</div>`;
+  const markBtn = already
+    ? `<button class="btn ghost block" disabled>✓ ทำเครื่องหมายว่าดูจบแล้ว</button>`
+    : `<button class="btn block" onclick="markWatched(${l.id})">✓ ทำเครื่องหมายว่าดูจบแล้ว</button>`;
+  const docBoxInner = already
+    ? `<button class="btn block" onclick="downloadDoc(${l.id},'${l.drive_doc_id}')">⬇ ดาวน์โหลดเอกสาร</button>`
+    : `<button class="btn ghost block" disabled>🔒 ดูวิดีโอให้จบก่อนเพื่อดาวน์โหลดเอกสาร</button>`;
+  const docBox = l.drive_doc_id ? `<div class="sidebox" style="margin-top:18px" id="docBox"><h4>📄 เอกสารประกอบการเรียน</h4>${docBoxInner}</div>` : '';
+  return `<div class="page-head"><div class="crumb" onclick="go('course',{courseId:${cid}})">← ${esc(c.title)}</div>
+    <h1 style="font-size:24px">${esc(l.title)}</h1><p>บทที่ ${idx+1} จาก ${lessons.length}</p></div>
     <div class="detail-grid">
       <div class="player-wrap">${screen}
         <div class="controls">
-          <div class="seekbar" title="ระบบล็อกการกรอ/ข้าม"><i id="seekFill"></i></div>
-          <div class="ctrl-row"><button class="play" id="playBtn" onclick="togglePlay()">▶</button>
-            <span class="time"><span id="curT">0:00</span> / <span id="durT">${l.cfUid?'--:--':fmtTime(l.dur)}</span></span>
-            <span class="lockmsg">🔒 ห้ามกรอ / ห้ามข้าม — ต้องดูจบ</span></div>
-          <div class="speed-note">${l.cfUid?'▶ วิดีโอจาก Cloudflare Stream · ระบบบล็อกการกรอไปข้างหน้าและหยุดเมื่อสลับแท็บ':'⚠️ บทนี้ยังไม่ผูก Cloudflare Video UID จึงเล่นเป็นโหมดสาธิต (เร่งความเร็ว) — แอดมินเพิ่ม UID ได้ที่เมนูจัดการคอร์ส'}</div>
+          <div id="markBtnWrap">${markBtn}</div>
+          <div class="speed-note">${l.drive_video_id ? '▶ วิดีโอฝังจาก Google Drive — เมื่อดูจบแล้วให้กดปุ่มด้านบนเพื่อปลดล็อกบทถัดไป' : '⚠️ บทนี้ยังไม่ผูกวิดีโอ Google Drive — แอดมินเพิ่มลิงก์ได้ที่เมนูจัดการคอร์ส'}</div>
         </div></div>
       <div><div class="sidebox"><h4>บทเรียนในคอร์สนี้</h4>
-        ${c.lessons.map((ll,i)=>{const p=getProg(CURRENT.id,cid),done=p.watched[i],cur=i===idx,prevDone=i===0||p.watched[i-1],unlocked=done||prevDone;
-          return `<div class="meta-row" style="cursor:${unlocked?'pointer':'default'};${cur?'background:#eaf3f9;margin:0 -20px;padding:7px 20px;border-radius:8px':''}" ${unlocked?`onclick="go('player',{courseId:'${cid}',lessonIdx:${i}})"`:''}>
-            <span>${done?'✓':(unlocked?(cur?'▶':'•'):'🔒')} ${ll.title.replace(/บทที่ \d+: /,'')}</span><span>${ll.cfUid?'Stream':fmtTime(ll.dur)}</span></div>`;}).join('')}
-      </div></div></div>`;
+        ${lessons.map((ll, i) => {
+          const done = ll.watched, cur = ll.id === l.id, prevDone = i === 0 || lessons[i-1].watched, unlocked = done || prevDone;
+          return `<div class="meta-row" style="cursor:${unlocked ? 'pointer' : 'default'};${cur ? 'background:#eaf3f9;margin:0 -20px;padding:7px 20px;border-radius:8px' : ''}" ${unlocked ? `onclick="go('player',{courseId:${cid},lessonId:${ll.id}})"` : ''}>
+            <span>${done ? '✓' : (unlocked ? (cur ? '▶' : '•') : '🔒')} ${esc(ll.title.replace(/บทที่ \d+: /, ''))}</span><span>${ll.drive_video_id ? '▶ วิดีโอ' : '—'}</span></div>`;
+        }).join('')}
+      </div>${docBox}</div></div>`;
 }
-function initPlayer(cid,idx){
-  stopPlayback();
-  const c=COURSES.find(x=>x.id===cid),l=c.lessons[idx];
-  player.cid=cid;player.idx=idx;player.max=0;player.playing=false;
-  document.addEventListener('visibilitychange',onVis);
-  if(l.cfUid){player.mode='cf';initStreamPlayer(cid,idx);}
-  else{player.mode='sim';player.dur=l.dur;player.t=0;
-    const p=getProg(CURRENT.id,cid);if(p.watched[idx]){player.t=player.dur;renderSimHead();showFinished();}}
+async function markWatched(lessonId){
+  try {
+    await api('lesson_mark_watched.php', { method: 'POST', body: { lesson_id: lessonId } });
+    showFinished();
+    const mb = document.getElementById('markBtnWrap');
+    if (mb) mb.innerHTML = '<button class="btn ghost block" disabled>✓ ทำเครื่องหมายว่าดูจบแล้ว</button>';
+    const db = document.getElementById('docBox');
+    if (db && currentPlayerLesson && currentPlayerLesson.drive_doc_id) {
+      db.innerHTML = `<h4>📄 เอกสารประกอบการเรียน</h4><button class="btn block" onclick="downloadDoc(${currentPlayerLesson.id},'${currentPlayerLesson.drive_doc_id}')">⬇ ดาวน์โหลดเอกสาร</button>`;
+    }
+    toast('บันทึกว่าดูจบบทนี้แล้ว', true);
+  } catch (e) { toast(e.message || 'บันทึกไม่สำเร็จ'); }
 }
-function onVis(){if(document.hidden&&player.playing){if(player.mode==='cf'){try{player.cf.pause();}catch(e){}}else pausePlay();}}
-
-/* ----- Cloudflare Stream mode ----- */
-function initStreamPlayer(cid,idx){
-  const iframe=document.getElementById('cfFrame');if(!iframe)return;
-  const p=getProg(CURRENT.id,cid);
-  let tries=0;
-  const boot=()=>{
-    if(!window.Stream){if(++tries>60)return;return setTimeout(boot,150);}
-    const cf=Stream(iframe);player.cf=cf;
-    cf.addEventListener('loadedmetadata',()=>{player.dur=cf.duration||0;const d=document.getElementById('durT');if(d)d.textContent=fmtTime(player.dur);if(p.watched[idx])player.max=player.dur;});
-    cf.addEventListener('play',()=>{player.playing=true;const b=document.getElementById('playBtn');if(b)b.textContent='❚❚';});
-    cf.addEventListener('pause',()=>{player.playing=false;const b=document.getElementById('playBtn');if(b)b.textContent='▶';});
-    cf.addEventListener('seeking',()=>{if((cf.currentTime||0)>player.max+1.5)cf.currentTime=player.max;});
-    cf.addEventListener('timeupdate',()=>{
-      const t=cf.currentTime||0;
-      if(t>player.max+1.5){cf.currentTime=player.max;return;}  // บล็อกการกรอไปข้างหน้า
-      player.max=Math.max(player.max,t);
-      const pct=player.dur?player.max/player.dur*100:0;
-      const sf=document.getElementById('seekFill');if(sf)sf.style.width=pct+'%';
-      const ct=document.getElementById('curT');if(ct)ct.textContent=fmtTime(player.max);
-      if(player.dur&&player.max>=player.dur*0.97&&!getProg(CURRENT.id,cid).watched[idx])finishLesson();
-    });
-    cf.addEventListener('ended',()=>finishLesson());
-  };
-  boot();
+async function downloadDoc(lessonId, docId){
+  try {
+    await api('doc_download_log.php', { method: 'POST', body: { lesson_id: lessonId } });
+    window.open(driveDownloadSrc(docId), '_blank');
+  } catch (e) { toast(e.message || 'ดาวน์โหลดไม่สำเร็จ'); }
 }
-
-/* ----- Simulated mode ----- */
-function togglePlay(){
-  if(player.mode==='cf'){if(!player.cf)return;try{player.cf.paused?player.cf.play():player.cf.pause();}catch(e){}return;}
-  player.playing?pausePlay():playPlay();
-}
-function playPlay(){
-  if(player.t>=player.dur)return;player.playing=true;
-  document.getElementById('bigPlay').classList.add('hidden');
-  document.getElementById('screen').classList.add('playing');
-  document.getElementById('playBtn').textContent='❚❚';
-  const speed=Math.max(1,player.dur/12);
-  player.timer=setInterval(()=>{player.t+=0.25*speed;if(player.t>=player.dur){player.t=player.dur;renderSimHead();finishLesson();}else renderSimHead();},250);
-}
-function pausePlay(){player.playing=false;if(player.timer){clearInterval(player.timer);player.timer=null;}document.getElementById('screen')?.classList.remove('playing');const pb=document.getElementById('playBtn');if(pb)pb.textContent='▶';const bp=document.getElementById('bigPlay');if(bp)bp.classList.remove('hidden');}
-function renderSimHead(){const pct=player.t/player.dur*100;const sf=document.getElementById('seekFill');if(sf)sf.style.width=pct+'%';const ct=document.getElementById('curT');if(ct)ct.textContent=fmtTime(player.t);}
-
-function finishLesson(){
-  if(player.timer){clearInterval(player.timer);player.timer=null;}
-  player.playing=false;
-  const p=getProg(CURRENT.id,player.cid);
-  p.watched[player.idx]=true;p.lastDate=new Date().toISOString().slice(0,10);saveProgress();
-  showFinished();
-  const pb=document.getElementById('playBtn');if(pb)pb.textContent='▶';
-}
-function showFinished(){const ov=document.getElementById('finOv');if(ov)ov.classList.remove('hidden');document.getElementById('screen')?.classList.remove('playing');const bp=document.getElementById('bigPlay');if(bp)bp.classList.add('hidden');}
-function afterLastLesson(cid){const c=COURSES.find(x=>x.id===cid);if(allWatched(CURRENT.id,c))go('quiz',{courseId:cid});else{toast('ยังดูวิดีโอไม่ครบทุกบท');go('course',{courseId:cid});}}
+function showFinished(){ const ov = document.getElementById('finOv'); if (ov) ov.classList.remove('hidden'); }
+function afterLastLesson(cid){ go('quiz', { courseId: cid }); }
 
 /* ---------- Quiz ---------- */
-let quizState={cid:null,answers:[],submitted:false};
-function viewQuiz(cid){
-  const c=COURSES.find(x=>x.id===cid);quizState={cid,answers:c.quiz.map(()=>null),submitted:false};
-  return `<div class="quiz-card"><div class="quiz-head"><h2>📝 แบบทดสอบ: ${c.title}</h2>
-    <p>${c.quiz.length} ข้อ · เกณฑ์ผ่าน ${PASS_MARK}% · เลือกคำตอบที่ถูกต้องที่สุด</p></div>
-    <div class="quiz-body" id="quizBody">${c.quiz.map((q,qi)=>`<div class="q" id="q${qi}"><div class="qn"><b>${qi+1}.</b>${q.q}</div>
-      ${q.opts.map((o,oi)=>`<div class="opt" data-q="${qi}" data-o="${oi}" onclick="pickOpt(${qi},${oi})"><div class="mk"></div><div>${o}</div></div>`).join('')}</div>`).join('')}</div>
-    <div class="quiz-foot"><span class="pct" id="qprog">ตอบแล้ว 0/${c.quiz.length} ข้อ</span>
-      <button class="btn ghost" onclick="go('course',{courseId:'${cid}'})">ยกเลิก</button>
+let quizState = { cid: null, questions: [], answers: {}, submitted: false };
+async function viewQuiz(cid){
+  let data;
+  try {
+    data = await api('quiz_get.php?course_id=' + cid);
+  } catch (e) {
+    toast(e.message || 'ไม่สามารถเปิดแบบทดสอบได้');
+    throw new Redirect('course', { courseId: cid });
+  }
+  quizState = { cid, questions: data.questions, answers: {}, submitted: false };
+  return `<div class="quiz-card"><div class="quiz-head"><h2>📝 แบบทดสอบ: ${esc(data.course_title)}</h2>
+    <p>${data.questions.length} ข้อ · เกณฑ์ผ่าน ${data.pass_mark}% · เลือกคำตอบที่ถูกต้องที่สุด</p></div>
+    <div class="quiz-body" id="quizBody">${data.questions.map((q,qi) => `<div class="q" id="q${qi}"><div class="qn"><b>${qi+1}.</b>${esc(q.question)}</div>
+      ${q.options.map((o,oi) => `<div class="opt" data-qid="${q.id}" data-o="${oi}" onclick="pickOpt(${q.id},${oi})"><div class="mk"></div><div>${esc(o)}</div></div>`).join('')}</div>`).join('')}</div>
+    <div class="quiz-foot"><span class="pct" id="qprog">ตอบแล้ว 0/${data.questions.length} ข้อ</span>
+      <button class="btn ghost" onclick="go('course',{courseId:${cid}})">ยกเลิก</button>
       <button class="btn" id="submitBtn" onclick="submitQuiz()" disabled>ส่งคำตอบ</button></div></div>`;
 }
-function pickOpt(qi,oi){
-  if(quizState.submitted)return;quizState.answers[qi]=oi;
-  document.querySelectorAll(`.opt[data-q="${qi}"]`).forEach(el=>el.classList.toggle('sel',+el.dataset.o===oi));
-  const ans=quizState.answers.filter(x=>x!==null).length,total=quizState.answers.length;
-  document.getElementById('qprog').textContent=`ตอบแล้ว ${ans}/${total} ข้อ`;
-  document.getElementById('submitBtn').disabled=ans<total;
+function pickOpt(qid, oi){
+  if (quizState.submitted) return;
+  quizState.answers[qid] = oi;
+  document.querySelectorAll(`.opt[data-qid="${qid}"]`).forEach(el => el.classList.toggle('sel', +el.dataset.o === oi));
+  const ans = Object.keys(quizState.answers).length, total = quizState.questions.length;
+  document.getElementById('qprog').textContent = `ตอบแล้ว ${ans}/${total} ข้อ`;
+  document.getElementById('submitBtn').disabled = ans < total;
 }
-function submitQuiz(){
-  const c=COURSES.find(x=>x.id===quizState.cid);let correct=0;
-  c.quiz.forEach((q,qi)=>{const a=quizState.answers[qi];
-    document.querySelectorAll(`.opt[data-q="${qi}"]`).forEach(el=>{const oi=+el.dataset.o;el.style.pointerEvents='none';if(oi===q.answer)el.classList.add('correct');else if(oi===a)el.classList.add('wrong');});
-    if(a===q.answer)correct++;});
-  const score=Math.round(correct/c.quiz.length*100);quizState.submitted=true;
-  const p=getProg(CURRENT.id,quizState.cid);p.attempts++;if(p.score===null||score>p.score)p.score=score;p.lastDate=new Date().toISOString().slice(0,10);saveProgress();
-  document.getElementById('submitBtn').outerHTML=`<button class="btn navy" onclick="go('result',{courseId:'${quizState.cid}'})">ดูผลคะแนน →</button>`;
-  document.getElementById('qprog').textContent=`ได้ ${correct}/${c.quiz.length} ข้อ (${score}%)`;
-  toast(`บันทึกคะแนน ${score}% เรียบร้อย`,true);window.scrollTo({top:0,behavior:'smooth'});
+let lastResult = null;
+async function submitQuiz(){
+  try {
+    const res = await api('quiz_submit.php', { method: 'POST', body: { course_id: quizState.cid, answers: quizState.answers } });
+    quizState.submitted = true;
+    res.details.forEach(d => {
+      document.querySelectorAll(`.opt[data-qid="${d.question_id}"]`).forEach(el => {
+        const oi = +el.dataset.o; el.style.pointerEvents = 'none';
+        if (oi === d.correct_index) el.classList.add('correct');
+        else if (oi === d.given) el.classList.add('wrong');
+      });
+    });
+    document.getElementById('submitBtn').outerHTML = `<button class="btn navy" onclick="go('result',{courseId:${quizState.cid}})">ดูผลคะแนน →</button>`;
+    document.getElementById('qprog').textContent = `ได้ ${res.correct}/${res.total} ข้อ (${res.score}%)`;
+    lastResult = { courseId: quizState.cid, ...res };
+    toast(`บันทึกคะแนน ${res.score}% เรียบร้อย`, true);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  } catch (e) { toast(e.message || 'ส่งคำตอบไม่สำเร็จ'); }
 }
 function viewResult(cid){
-  const c=COURSES.find(x=>x.id===cid),p=getProg(CURRENT.id,cid),score=p.score,pass=score>=PASS_MARK,col=pass?'var(--ok)':'var(--red)';
+  if (!lastResult || lastResult.courseId !== cid) throw new Redirect('course', { courseId: cid });
+  const { score, passed } = lastResult;
+  const col = passed ? 'var(--ok)' : 'var(--red)';
   return `<div class="result-card"><div class="result-ring" style="background:conic-gradient(${col} ${score}%, #eef2f5 0)">
       <div class="inner"><b style="color:${col}">${score}%</b><span>คะแนน</span></div></div>
-    <h2>${pass?'🎉 ยินดีด้วย ผ่านแล้ว!':'😅 ยังไม่ผ่านเกณฑ์'}</h2>
-    <p class="sub">${c.title}<br>${pass?`คุณทำคะแนนได้ตามเกณฑ์ ${PASS_MARK}% ระบบบันทึกผลเรียบร้อยแล้ว`:`ต้องได้อย่างน้อย ${PASS_MARK}% ลองดูวิดีโอทบทวนแล้วทำใหม่ได้`}</p>
-    <div class="result-actions">${pass?'':`<button class="btn" onclick="go('quiz',{courseId:'${cid}'})">ทำแบบทดสอบใหม่</button>`}
-      <button class="btn ${pass?'':'ghost'}" onclick="go('myscore')">ดูผลการเรียนทั้งหมด</button>
+    <h2>${passed ? '🎉 ยินดีด้วย ผ่านแล้ว!' : '😅 ยังไม่ผ่านเกณฑ์'}</h2>
+    <p class="sub">${passed ? `คุณทำคะแนนได้ตามเกณฑ์ ${PASS_MARK}% ระบบบันทึกผลเรียบร้อยแล้ว` : `ต้องได้อย่างน้อย ${PASS_MARK}% ลองดูวิดีโอทบทวนแล้วทำใหม่ได้`}</p>
+    <div class="result-actions">${passed ? '' : `<button class="btn" onclick="go('quiz',{courseId:${cid}})">ทำแบบทดสอบใหม่</button>`}
+      <button class="btn ${passed ? '' : 'ghost'}" onclick="go('myscore')">ดูผลการเรียนทั้งหมด</button>
       <button class="btn ghost" onclick="go('dash')">กลับหน้าหลัก</button></div></div>`;
 }
 
-/* ---------- My score ---------- */
-function viewMyScore(){
-  const my=COURSES.filter(c=>c.track===CURRENT.track);
-  const rows=my.map(c=>{const p=getProg(CURRENT.id,c.id),pct=courseProgPct(CURRENT.id,c);
-    const sc=p.score===null?`<span class="score-pill s-none">—</span>`:`<span class="score-pill ${p.score>=PASS_MARK?'s-pass':'s-fail'}">${p.score}%</span>`;
-    return `<tr><td><b style="color:var(--navy)">${c.icon} ${c.title}</b></td><td>${pct}%</td><td>${sc}</td><td>${p.attempts}</td><td>${p.lastDate||'—'}</td><td><button class="btn sm ghost" onclick="go('course',{courseId:'${c.id}'})">เปิด</button></td></tr>`;}).join('');
-  return `<div class="page-head"><h1>ผลการเรียนของฉัน</h1><p>สรุปความคืบหน้าและคะแนนสอบของคุณในสายงาน ${TRACKS[CURRENT.track].name}</p></div>
-    <div class="table-wrap"><table><thead><tr><th>หลักสูตร</th><th>คืบหน้า</th><th>คะแนนสอบ</th><th>จำนวนครั้ง</th><th>ล่าสุด</th><th></th></tr></thead><tbody>${rows}</tbody></table></div>`;
+/* ---------- My score (พนักงาน) ---------- */
+async function viewMyScore(){
+  const { courses } = await api('courses_list.php');
+  const rows = courses.map(c => {
+    const sc = c.best_score === null ? `<span class="score-pill s-none">—</span>` : `<span class="score-pill ${c.best_score >= PASS_MARK ? 's-pass' : 's-fail'}">${c.best_score}%</span>`;
+    const lock = c.locked ? ' 🔒' : '';
+    return `<tr><td><b style="color:var(--navy)">${c.icon} ${esc(c.title)}${lock}</b><br><small style="color:#9aa8b0">${esc(c.department_name)} · Lv.${c.level}</small></td><td>${c.progress_pct}%</td><td>${sc}</td><td>${c.attempts}</td><td>${c.last_date || '—'}</td><td>${c.locked ? '<button class="btn sm ghost" disabled>ล็อก</button>' : `<button class="btn sm ghost" onclick="go('course',{courseId:${c.id}})">เปิด</button>`}</td></tr>`;
+  }).join('');
+  return `<div class="page-head"><h1>ผลการเรียนของฉัน</h1><p>สรุปความคืบหน้าและคะแนนสอบของคุณทุกแผนกที่สังกัด</p></div>
+    <div class="table-wrap"><table><thead><tr><th>หลักสูตร</th><th>คืบหน้า</th><th>คะแนนสอบ</th><th>จำนวนครั้ง</th><th>ล่าสุด</th><th></th></tr></thead><tbody>${rows || '<tr><td colspan=6 style="text-align:center;color:#9aa8b0;padding:30px">ไม่มีข้อมูล</td></tr>'}</tbody></table></div>`;
 }
 
 /* ---------- Admin dashboard ---------- */
-function viewAdmin(){
-  const allEmp=USERS.filter(u=>u.role==='emp');let totalScores=[],completions=0;
-  allEmp.forEach(u=>COURSES.filter(c=>c.track===u.track).forEach(c=>{const p=getProg(u.id,c.id);if(p.score!==null){totalScores.push(p.score);if(p.score>=PASS_MARK)completions++;}}));
-  const avg=totalScores.length?Math.round(totalScores.reduce((a,b)=>a+b,0)/totalScores.length):'—';
-  const totalAssign=allEmp.reduce((a,u)=>a+COURSES.filter(c=>c.track===u.track).length,0);
-  return `<div class="page-head"><h1>แดชบอร์ดผู้ดูแลระบบ</h1><p>ภาพรวมการเรียนรู้ของพนักงานทุกสายงาน Omnoi Group</p></div>
+async function viewAdmin(){
+  const [{ departments }, { users }, { courses }, { rows }] = await Promise.all([
+    api('departments_list.php'), api('users_list.php'), api('courses_list.php'), api('report_progress.php'),
+  ]);
+  const emps = users.filter(u => u.role === 'emp');
+  const scored = rows.filter(r => r.best_score !== null).map(r => r.best_score);
+  const avg = scored.length ? Math.round(scored.reduce((a,b) => a+b, 0) / scored.length) : '—';
+  const completions = rows.filter(r => r.completed).length;
+  return `<div class="page-head"><h1>แดชบอร์ดผู้ดูแลระบบ</h1><p>ภาพรวมการเรียนรู้ของพนักงานทุกแผนก Omnoi Group</p></div>
     <div class="grid cols-4" style="margin-bottom:28px">
-      <div class="stat accent"><div class="lab">พนักงานทั้งหมด</div><div class="num">${allEmp.length}</div></div>
-      <div class="stat"><div class="lab">หลักสูตรในระบบ</div><div class="num">${COURSES.length}</div></div>
-      <div class="stat"><div class="lab">เรียนจบ (ผ่าน)</div><div class="num">${completions}<small> / ${totalAssign}</small></div></div>
-      <div class="stat"><div class="lab">คะแนนเฉลี่ยรวม</div><div class="num">${avg}<small>${avg==='—'?'':' %'}</small></div></div></div>
+      <div class="stat accent"><div class="lab">พนักงานทั้งหมด</div><div class="num">${emps.length}</div></div>
+      <div class="stat"><div class="lab">หลักสูตรในระบบ</div><div class="num">${courses.length}</div></div>
+      <div class="stat"><div class="lab">เรียนจบ (ผ่าน)</div><div class="num">${completions}<small> / ${rows.length}</small></div></div>
+      <div class="stat"><div class="lab">คะแนนเฉลี่ยรวม</div><div class="num">${avg}<small>${avg === '—' ? '' : ' %'}</small></div></div></div>
     <div class="grid cols-2">
-      <div class="panel"><h3>สรุปตามสายงาน</h3><p class="sub">ความคืบหน้าเฉลี่ยของแต่ละกลุ่ม</p>
-        ${Object.entries(TRACKS).map(([k,t])=>{const emps=allEmp.filter(u=>u.track===k),courses=COURSES.filter(c=>c.track===k);let pcts=[];emps.forEach(u=>courses.forEach(c=>pcts.push(courseProgPct(u.id,c))));const avgp=pcts.length?Math.round(pcts.reduce((a,b)=>a+b,0)/pcts.length):0;
-          return `<div style="margin-bottom:14px"><div style="display:flex;justify-content:space-between;font-size:14px;margin-bottom:5px"><span style="font-weight:600;color:var(--navy)">${t.icon} ${t.name} <small style="color:#9aa8b0">(${emps.length} คน · ${courses.length} คอร์ส)</small></span><span style="font-weight:700;font-family:'Prompt'">${avgp}%</span></div><div class="progress"><i style="width:${avgp}%;background:${t.color}"></i></div></div>`;}).join('')}</div>
+      <div class="panel"><h3>สรุปตามแผนก</h3><p class="sub">ความคืบหน้าเฉลี่ยของแต่ละแผนก</p>
+        ${departments.map(d => {
+          const deptRows = rows.filter(r => r.department_id === d.id);
+          const avgp = deptRows.length ? Math.round(deptRows.reduce((a,r) => a+r.progress_pct, 0) / deptRows.length) : 0;
+          return `<div style="margin-bottom:14px"><div style="display:flex;justify-content:space-between;font-size:14px;margin-bottom:5px"><span style="font-weight:600;color:var(--navy)">${d.icon} ${esc(d.name)} <small style="color:#9aa8b0">(${d.user_count ?? 0} คน · ${d.course_count ?? 0} คอร์ส)</small></span><span style="font-weight:700;font-family:'Prompt'">${avgp}%</span></div><div class="progress"><i style="width:${avgp}%;background:${d.color}"></i></div></div>`;
+        }).join('') || '<p style="color:#9aa8b0">ยังไม่มีแผนก</p>'}</div>
       <div class="panel"><h3>การดำเนินการด่วน</h3><p class="sub">เครื่องมือสำหรับ L&D / HR</p>
         <div style="display:flex;flex-direction:column;gap:10px">
-          <button class="btn block" onclick="go('manage')">➕ จัดการคอร์ส / เพิ่มวิดีโอ Cloudflare</button>
-          <button class="btn block navy" onclick="go('report')">📊 ดูรายงานคะแนนพนักงานรายบุคคล</button>
-          <button class="btn block ghost" onclick="resetDemo()">♻️ รีเซ็ตข้อมูลกลับค่าเริ่มต้น</button></div>
-        <div class="help-box" style="margin-top:18px">💡 ระบบนี้เป็น <b>MVP เก็บข้อมูลในเครื่อง (localStorage)</b> เหมาะสำหรับสาธิต/นำร่อง — เมื่อพร้อมใช้จริงหลายคน แนะนำต่อ Cloudflare Worker + D1 เพื่อเก็บผู้ใช้/คะแนนกลางและออก Signed URL</div></div></div>`;
+          <button class="btn block" onclick="go('manage')">➕ จัดการคอร์ส / เพิ่มวิดีโอ Google Drive</button>
+          <button class="btn block navy" onclick="go('users')">👤 จัดการผู้ใช้ / สร้างบัญชีพนักงาน</button>
+          <button class="btn block navy" onclick="go('depts')">🏢 จัดการแผนก</button>
+          <button class="btn block ghost" onclick="go('report')">📊 ดูรายงานคะแนนพนักงานรายบุคคล</button>
+          <button class="btn block ghost" onclick="go('logs')">🗒️ ประวัติการใช้งาน (Log)</button></div></div></div>`;
 }
 
 /* ---------- Admin report ---------- */
-let reportFilter='all';
-function viewReport(){
-  const emps=USERS.filter(u=>u.role==='emp'&&(reportFilter==='all'||u.track===reportFilter));
-  const tabs=`<div class="tabs"><button class="tab ${reportFilter==='all'?'active':''}" onclick="reportFilter='all';go('report')">ทั้งหมด</button>${Object.entries(TRACKS).map(([k,t])=>`<button class="tab ${reportFilter===k?'active':''}" onclick="reportFilter='${k}';go('report')">${t.icon} ${t.name}</button>`).join('')}</div>`;
-  let rows='';
-  emps.forEach(u=>{const courses=COURSES.filter(c=>c.track===u.track);
-    if(!courses.length){rows+=`<tr><td><div class="who"><div class="avatar">${u.name.charAt(0)}</div><div><b style="color:var(--navy)">${u.name}</b><br><small style="color:#9aa8b0">${TRACKS[u.track].name}</small></div></div></td><td colspan="6" style="color:#9aa8b0">ยังไม่มีหลักสูตร</td></tr>`;return;}
-    courses.forEach((c,i)=>{const p=getProg(u.id,c.id),pct=courseProgPct(u.id,c);
-      const sc=p.score===null?`<span class="score-pill s-none">ยังไม่สอบ</span>`:`<span class="score-pill ${p.score>=PASS_MARK?'s-pass':'s-fail'}">${p.score}%</span>`;
-      const status=p.score!==null&&p.score>=PASS_MARK?'✅ ผ่าน':(p.score!==null?'❌ ไม่ผ่าน':(pct>0?'⏳ กำลังเรียน':'⚪ ยังไม่เริ่ม'));
-      rows+=`<tr><td>${i===0?`<div class="who"><div class="avatar">${u.name.charAt(0)}</div><div><b style="color:var(--navy)">${u.name}</b><br><small style="color:#9aa8b0">${TRACKS[u.track].name}</small></div></div>`:''}</td><td>${c.icon} ${c.title}</td><td>${pct}%</td><td>${sc}</td><td>${p.attempts}</td><td>${status}</td><td><small style="color:#9aa8b0">${p.lastDate||'—'}</small></td></tr>`;});});
-  return `<div class="page-head"><h1>รายงานผลการเรียนรายบุคคล</h1><p>ติดตามความคืบหน้าและคะแนนสอบของพนักงานแต่ละคน · กรองตามสายงานได้</p></div>${tabs}
-    <div class="table-wrap"><table><thead><tr><th>พนักงาน</th><th>หลักสูตร</th><th>ดูวิดีโอ</th><th>คะแนน</th><th>ครั้ง</th><th>สถานะ</th><th>ล่าสุด</th></tr></thead><tbody>${rows||'<tr><td colspan=7 style="text-align:center;color:#9aa8b0;padding:30px">ไม่มีข้อมูล</td></tr>'}</tbody></table></div>`;
+let reportDeptFilter = null;
+async function viewReport(){
+  const { departments } = await api('departments_list.php');
+  const qs = reportDeptFilter ? ('?dept=' + reportDeptFilter) : '';
+  const { rows } = await api('report_progress.php' + qs);
+  const tabs = `<div class="tabs"><button class="tab ${reportDeptFilter === null ? 'active' : ''}" onclick="reportDeptFilter=null;go('report')">ทั้งหมด</button>${departments.map(d => `<button class="tab ${reportDeptFilter === d.id ? 'active' : ''}" onclick="reportDeptFilter=${d.id};go('report')">${d.icon} ${esc(d.name)}</button>`).join('')}</div>`;
+  let body = '';
+  let lastUser = null;
+  if (!rows.length) {
+    body = '<tr><td colspan="7" style="text-align:center;color:#9aa8b0;padding:30px">ไม่มีข้อมูล</td></tr>';
+  } else {
+    rows.forEach(r => {
+      const sc = r.best_score === null ? `<span class="score-pill s-none">ยังไม่สอบ</span>` : `<span class="score-pill ${r.best_score >= PASS_MARK ? 's-pass' : 's-fail'}">${r.best_score}%</span>`;
+      const status = r.completed ? '✅ ผ่าน' : (r.best_score !== null ? '❌ ไม่ผ่าน' : (r.progress_pct > 0 ? '⏳ กำลังเรียน' : '⚪ ยังไม่เริ่ม'));
+      const showUser = r.user_id !== lastUser;
+      lastUser = r.user_id;
+      body += `<tr><td>${showUser ? `<div class="who"><div class="avatar">${esc(r.full_name.charAt(0))}</div><div><b style="color:var(--navy)">${esc(r.full_name)}</b><br><small style="color:#9aa8b0">@${esc(r.username)}</small></div></div>` : ''}</td><td><small style="color:#9aa8b0;display:block">${esc(r.department_name)}</small>Lv.${r.level} ${esc(r.course_title)}</td><td>${r.progress_pct}%</td><td>${sc}</td><td>${r.attempts}</td><td>${status}</td><td><small style="color:#9aa8b0">${r.last_date || '—'}</small></td></tr>`;
+    });
+  }
+  return `<div class="page-head"><h1>รายงานผลการเรียนรายบุคคล</h1><p>ติดตามความคืบหน้าและคะแนนสอบของพนักงานแต่ละคน · กรองตามแผนกได้</p></div>${tabs}
+    <div class="table-wrap"><table><thead><tr><th>พนักงาน</th><th>หลักสูตร</th><th>ดูวิดีโอ</th><th>คะแนน</th><th>ครั้ง</th><th>สถานะ</th><th>ล่าสุด</th></tr></thead><tbody>${body}</tbody></table></div>`;
 }
 
-/* ---------- Admin: manage courses + Cloudflare ---------- */
-let draftLessons=[{title:'',cfUid:''}];
-function viewManage(){
-  return `<div class="page-head"><h1>จัดการคอร์ส & วิดีโอ Cloudflare Stream</h1><p>สร้างหลักสูตร จัดกลุ่มตามสายงาน และผูก Video UID จาก Cloudflare Stream</p></div>
+/* ---------- Admin: จัดการคอร์ส + วิดีโอ/เอกสาร Google Drive ---------- */
+let draftLessons = [{ title: '', driveId: '', docId: '' }];
+let manageDepts = [];
+async function viewManage(){
+  const [{ departments }, { courses }] = await Promise.all([api('departments_list.php'), api('courses_list.php')]);
+  manageDepts = departments;
+  const deptOptions = departments.map(d => `<option value="${d.id}">${d.icon} ${esc(d.name)}</option>`).join('');
+  const grouped = departments.map(d => {
+    const cs = courses.filter(c => c.department_id === d.id);
+    if (!cs.length) return '';
+    return `<div style="margin:12px 0 4px;font-size:12px;font-weight:700;color:${d.color};font-family:'Prompt'">${d.icon} ${esc(d.name)}</div>
+      ${cs.map(c => `<div class="up-item"><div class="ic">${c.icon}</div><div class="t">Lv.${c.level} · ${esc(c.title)}<small>${c.lesson_count} บท · ${c.video_count}/${c.lesson_count} ผูกวิดีโอ · ${c.doc_count} มีเอกสาร · ${c.quiz_count} ข้อสอบ</small></div></div>`).join('')}`;
+  }).join('') || '<p style="color:#9aa8b0;font-size:13px">ยังไม่มีคอร์ส</p>';
+  return `<div class="page-head"><h1>จัดการคอร์ส & วิดีโอ/เอกสาร Google Drive</h1><p>สร้างหลักสูตรภายในแผนก กำหนด Level ลำดับการเรียน และผูกลิงก์วิดีโอ + เอกสารประกอบจาก Google Drive ของแต่ละบท</p></div>
   <div class="panel" style="margin-bottom:20px">
-    <h3>⚙️ ตั้งค่า Cloudflare Stream</h3><p class="sub">กรอก Customer Subdomain code (ไม่บังคับ — เว้นว่างได้ ระบบจะใช้โดเมนกลางของ Cloudflare)</p>
-    <div class="form-row"><div><label class="lab">Customer Subdomain code</label><input class="input" id="cfCode" placeholder="เช่น abcd1234efgh5678" value="${CFG.customerCode||''}"></div>
-      <div style="display:flex;align-items:flex-end"><button class="btn" onclick="saveCfgCode()">บันทึกการตั้งค่า</button></div></div>
-    <div class="help-box">หา code ได้ใน Cloudflare Dashboard → Stream → ดู URL แบบ <code>customer-<b>XXXX</b>.cloudflarestream.com</code> · ส่วน <b>Video UID</b> ของแต่ละคลิป ดูได้ในหน้ารายละเอียดวิดีโอ</div>
+    <h3>🎬 วิธีผูกวิดีโอ/เอกสาร Google Drive</h3><p class="sub">ไม่ต้องตั้งค่าอะไรเพิ่ม — แค่แชร์ไฟล์แล้ววางลิงก์</p>
+    <div class="help-box">1) อัปโหลดวิดีโอ/เอกสารขึ้น Google Drive · 2) คลิกขวา → <b>แชร์</b> → เปลี่ยนสิทธิ์เป็น <b>"ทุกคนที่มีลิงก์ - ดูได้ (Viewer)"</b> · 3) คัดลอกลิงก์แชร์ (เช่น <code>https://drive.google.com/file/d/&lt;ID&gt;/view</code>) แล้ววางในช่องของแต่ละบทด้านล่าง — ระบบจะดึง File ID ให้อัตโนมัติ (จะวางเฉพาะ File ID ก็ได้) · เอกสารประกอบ (เช่น PDF สไลด์) จะให้ดาวน์โหลดได้หลังผู้เรียนดูวิดีโอของบทนั้นจบ</div>
   </div>
   <div class="detail-grid" style="grid-template-columns:1fr 360px">
-    <div class="panel"><h3>➕ สร้างคอร์สใหม่</h3><p class="sub">เพิ่มบทเรียนและวาง Video UID ของแต่ละบท</p>
+    <div class="panel"><h3>➕ สร้างคอร์สใหม่</h3><p class="sub">เลือกแผนก กำหนด Level และเพิ่มบทเรียน</p>
       <div class="form-row one"><div><label class="lab">ชื่อหลักสูตร</label><input class="input" id="ncTitle" placeholder="เช่น เทคนิคการเจรจาต่อรอง"></div></div>
-      <div class="form-row"><div><label class="lab">สายงาน (Track)</label><select class="input" id="ncTrack">${Object.entries(TRACKS).map(([k,t])=>`<option value="${k}">${t.icon} ${t.name}</option>`).join('')}</select></div>
-        <div><label class="lab">ไอคอน (emoji)</label><input class="input" id="ncIcon" value="🎓"></div></div>
-      <div class="form-row one"><div><label class="lab">คำอธิบายสั้น</label><input class="input" id="ncDesc" placeholder="สรุปสิ่งที่ผู้เรียนจะได้รับ"></div></div>
-      <label class="lab">บทเรียน (ชื่อบท + Cloudflare Video UID)</label>
+      <div class="form-row"><div><label class="lab">แผนก (Department)</label><select class="input" id="ncDept">${deptOptions || '<option value="">— ยังไม่มีแผนก สร้างแผนกก่อน —</option>'}</select></div>
+        <div><label class="lab">Level (เว้นว่าง = ต่อจากลำดับล่าสุดในแผนกอัตโนมัติ)</label><input class="input" id="ncLevel" type="number" min="1" placeholder="เช่น 1, 2, 3..."></div></div>
+      <div class="form-row"><div><label class="lab">ไอคอน (emoji)</label><input class="input" id="ncIcon" value="🎓"></div>
+        <div><label class="lab">คำอธิบายสั้น</label><input class="input" id="ncDesc" placeholder="สรุปสิ่งที่ผู้เรียนจะได้รับ"></div></div>
+      <label class="lab">บทเรียน (ชื่อบท + ลิงก์วิดีโอ + ลิงก์เอกสารประกอบ)</label>
       <div id="lessonRows"></div>
       <button class="btn ghost sm" style="margin:4px 0 16px" onclick="addLessonRow()">+ เพิ่มบท</button>
-      <div class="help-box">เว้น Video UID ว่างได้ → บทนั้นจะเล่นเป็น <b>โหมดสาธิต</b> จนกว่าจะใส่ UID จริง · แบบทดสอบจะถูกสร้างเป็นตัวอย่าง 2 ข้อให้แก้ไขภายหลัง</div>
+      <div class="help-box">เว้นลิงก์วิดีโอว่างได้ → บทนั้นจะแสดงว่า <b>ยังไม่มีวิดีโอ</b> จนกว่าจะใส่ลิงก์จริง · คอร์ส Level มากกว่า 1 จะถูกล็อกจนกว่าพนักงานจะผ่าน Level ก่อนหน้าในแผนกเดียวกัน · แบบทดสอบจะถูกสร้างเป็นตัวอย่าง 2 ข้อให้แก้ไขภายหลัง</div>
       <div style="display:flex;gap:12px"><button class="btn" onclick="createCourse()">บันทึกคอร์ส</button>
-        <button class="btn ghost" onclick="draftLessons=[{title:'',cfUid:''}];go('manage')">ล้างฟอร์ม</button></div>
+        <button class="btn ghost" onclick="draftLessons=[{title:'',driveId:'',docId:''}];go('manage')">ล้างฟอร์ม</button></div>
     </div>
-    <div><div class="sidebox"><h4>หลักสูตรในระบบ (${COURSES.length})</h4>
-      ${Object.entries(TRACKS).map(([k,t])=>{const cs=COURSES.filter(c=>c.track===k);if(!cs.length)return'';
-        return `<div style="margin:12px 0 4px;font-size:12px;font-weight:700;color:${t.color};font-family:'Prompt'">${t.icon} ${t.name}</div>
-        ${cs.map(c=>{const linked=c.lessons.filter(l=>l.cfUid).length;return `<div class="up-item"><div class="ic">${c.icon}</div><div class="t">${c.title}<small>${c.lessons.length} บท · ${linked}/${c.lessons.length} ผูก Stream · ${c.quiz.length} ข้อสอบ</small></div></div>`;}).join('')}`;}).join('')}
-    </div></div>
+    <div><div class="sidebox"><h4>หลักสูตรในระบบ (${courses.length})</h4>${grouped}</div></div>
   </div>`;
 }
 function renderLessonRows(){
-  const el=document.getElementById('lessonRows');if(!el)return;
-  el.innerHTML=draftLessons.map((l,i)=>`<div class="lesson-row"><div class="ln">${i+1}</div>
-    <input class="input" placeholder="ชื่อบท เช่น บทที่ ${i+1}: ..." value="${l.title.replace(/"/g,'&quot;')}" oninput="draftLessons[${i}].title=this.value">
-    <input class="input" placeholder="Cloudflare Video UID (ไม่บังคับ)" value="${l.cfUid}" oninput="draftLessons[${i}].cfUid=this.value.trim()">
-    <button class="btn ghost sm" onclick="draftLessons.splice(${i},1);if(!draftLessons.length)draftLessons=[{title:'',cfUid:''}];renderLessonRows()">ลบ</button></div>`).join('');
+  const el = document.getElementById('lessonRows'); if (!el) return;
+  el.innerHTML = draftLessons.map((l, i) => `<div class="lesson-row">
+    <div class="row1"><div class="ln">${i+1}</div>
+      <input class="input" placeholder="ชื่อบท เช่น บทที่ ${i+1}: ..." value="${esc(l.title)}" oninput="draftLessons[${i}].title=this.value">
+      <button class="btn ghost sm" onclick="draftLessons.splice(${i},1);if(!draftLessons.length)draftLessons=[{title:'',driveId:'',docId:''}];renderLessonRows()">ลบ</button></div>
+    <div class="row2">
+      <input class="input" placeholder="🎬 ลิงก์วิดีโอ Google Drive (ไม่บังคับ)" value="${esc(l.driveId)}" oninput="draftLessons[${i}].driveId=this.value">
+      <input class="input" placeholder="📄 ลิงก์เอกสารประกอบ Google Drive (ไม่บังคับ)" value="${esc(l.docId)}" oninput="draftLessons[${i}].docId=this.value">
+    </div></div>`).join('');
 }
-function addLessonRow(){draftLessons.push({title:'',cfUid:''});renderLessonRows();}
-function saveCfgCode(){CFG.customerCode=document.getElementById('cfCode').value.trim();saveCfg();toast('บันทึกการตั้งค่า Cloudflare แล้ว',true);}
-function createCourse(){
-  const title=document.getElementById('ncTitle').value.trim();
-  const track=document.getElementById('ncTrack').value;
-  const icon=document.getElementById('ncIcon').value.trim()||'🎓';
-  const desc=document.getElementById('ncDesc').value.trim()||'หลักสูตรใหม่';
-  const lessons=draftLessons.filter(l=>l.title.trim()).map((l,i)=>({title:l.title.trim(),dur:20+i*3,cfUid:l.cfUid.trim()}));
-  if(!title){toast('กรุณากรอกชื่อหลักสูตร');return;}
-  if(!lessons.length){toast('กรุณาเพิ่มบทเรียนอย่างน้อย 1 บท');return;}
-  const id='c'+Date.now().toString().slice(-6);
-  COURSES.push({id,track,title,icon,color:TRACKS[track].color,desc,lessons,
-    quiz:[{q:'ตัวอย่างคำถามที่ 1 ของหลักสูตรนี้ (แก้ไขในโค้ด/ฐานข้อมูลภายหลัง)',opts:['ตัวเลือก ก','ตัวเลือก ข (ถูก)','ตัวเลือก ค','ตัวเลือก ง'],answer:1},
-          {q:'ตัวอย่างคำถามที่ 2 ของหลักสูตรนี้',opts:['ตัวเลือก ก (ถูก)','ตัวเลือก ข','ตัวเลือก ค','ตัวเลือก ง'],answer:0}]});
-  saveCourses();draftLessons=[{title:'',cfUid:''}];
-  toast('สร้างหลักสูตร "'+title+'" เรียบร้อย',true);go('manage');
-}
-function resetDemo(){
-  if(!confirm('รีเซ็ตคอร์ส/คะแนน/การตั้งค่าทั้งหมดกลับเป็นค่าเริ่มต้น?'))return;
-  localStorage.removeItem(LS_KEY);localStorage.removeItem(COURSES_KEY);localStorage.removeItem(CFG_KEY);
-  PROGRESS={};CFG={customerCode:''};loadCourses();seedDemoProgress();
-  toast('รีเซ็ตข้อมูลแล้ว',true);go('admin');
+function addLessonRow(){ draftLessons.push({ title: '', driveId: '', docId: '' }); renderLessonRows(); }
+async function createCourse(){
+  const deptId = +(document.getElementById('ncDept').value || 0);
+  const title = document.getElementById('ncTitle').value.trim();
+  const level = document.getElementById('ncLevel').value.trim();
+  const icon = document.getElementById('ncIcon').value.trim() || '🎓';
+  const desc = document.getElementById('ncDesc').value.trim();
+  const lessons = draftLessons.filter(l => l.title.trim()).map(l => ({ title: l.title.trim(), driveId: l.driveId.trim(), docId: l.docId.trim() }));
+  if (!deptId) { toast('กรุณาเลือกแผนก (สร้างแผนกก่อนถ้ายังไม่มี)'); return; }
+  if (!title) { toast('กรุณากรอกชื่อหลักสูตร'); return; }
+  if (!lessons.length) { toast('กรุณาเพิ่มบทเรียนอย่างน้อย 1 บท'); return; }
+  const dept = manageDepts.find(d => d.id === deptId);
+  try {
+    await api('courses_save.php', { method: 'POST', body: {
+      department_id: deptId, title, description: desc, icon,
+      color: dept ? dept.color : '#003149',
+      level: level ? +level : null,
+      lessons,
+    }});
+    draftLessons = [{ title: '', driveId: '', docId: '' }];
+    toast('สร้างหลักสูตร "' + title + '" เรียบร้อย', true);
+    go('manage');
+  } catch (e) { toast(e.message || 'บันทึกคอร์สไม่สำเร็จ'); }
 }
 
-/* ---------- init ---------- */
-loadCfg();loadCourses();loadProgress();seedDemoProgress();renderDemoChips();
-// re-render lesson rows after manage view loads
-const _go=go;go=function(s,o){_go(s,o);if(s==='manage')renderLessonRows();};
+/* ---------- Admin: จัดการแผนก ---------- */
+let editingDept = null;
+let deptsCache = [];
+async function viewDepts(){
+  const { departments } = await api('departments_list.php');
+  deptsCache = departments;
+  const rows = departments.map(d => `<tr><td style="font-size:20px">${d.icon}</td><td><b style="color:var(--navy)">${esc(d.name)}</b></td><td><span style="display:inline-block;width:16px;height:16px;border-radius:5px;background:${d.color};vertical-align:middle;margin-right:6px"></span>${esc(d.color)}</td><td>${d.course_count ?? '—'}</td><td>${d.user_count ?? '—'}</td><td><button class="btn sm ghost" onclick="editDept(${d.id})">แก้ไข</button></td></tr>`).join('');
+  const ed = editingDept;
+  return `<div class="page-head"><h1>จัดการแผนก</h1><p>สร้าง/แก้ไขแผนก — คอร์สทุกคอร์สจะอยู่ภายในแผนก</p></div>
+    <div class="detail-grid" style="grid-template-columns:360px 1fr">
+      <div class="panel"><h3>${ed ? '✏️ แก้ไขแผนก' : '➕ สร้างแผนกใหม่'}</h3>
+        <div class="form-row one"><div><label class="lab">ชื่อแผนก</label><input class="input" id="dName" value="${ed ? esc(ed.name) : ''}" placeholder="เช่น ฝ่ายการตลาด"></div></div>
+        <div class="form-row"><div><label class="lab">ไอคอน (emoji)</label><input class="input" id="dIcon" value="${ed ? esc(ed.icon) : '📋'}"></div>
+          <div><label class="lab">สี (hex)</label><input class="input" id="dColor" value="${ed ? esc(ed.color) : '#003149'}"></div></div>
+        <div style="display:flex;gap:10px">
+          <button class="btn" onclick="saveDept()">${ed ? 'บันทึกการแก้ไข' : 'สร้างแผนก'}</button>
+          ${ed ? `<button class="btn ghost" onclick="editingDept=null;go('depts')">ยกเลิก</button>` : ''}
+        </div>
+      </div>
+      <div class="table-wrap"><table><thead><tr><th></th><th>ชื่อแผนก</th><th>สี</th><th>คอร์ส</th><th>พนักงาน</th><th></th></tr></thead><tbody>${rows || '<tr><td colspan=6 style="text-align:center;color:#9aa8b0;padding:30px">ยังไม่มีแผนก</td></tr>'}</tbody></table></div>
+    </div>`;
+}
+function editDept(id){ editingDept = deptsCache.find(d => d.id === id) || null; go('depts'); }
+async function saveDept(){
+  const name = document.getElementById('dName').value.trim();
+  const icon = document.getElementById('dIcon').value.trim() || '📋';
+  const color = document.getElementById('dColor').value.trim() || '#003149';
+  if (!name) { toast('กรุณากรอกชื่อแผนก'); return; }
+  try {
+    const body = { name, icon, color };
+    if (editingDept) body.id = editingDept.id;
+    await api('departments_save.php', { method: 'POST', body });
+    toast(editingDept ? 'แก้ไขแผนกเรียบร้อย' : 'สร้างแผนกเรียบร้อย', true);
+    editingDept = null;
+    go('depts');
+  } catch (e) { toast(e.message || 'บันทึกไม่สำเร็จ'); }
+}
+
+/* ---------- Admin: จัดการผู้ใช้ (สร้าง user/password + เลือกแผนกได้หลายแผนก) ---------- */
+let editingUser = null;
+let usersCache = [];
+let pwRevealMsg = null;
+async function viewUsers(){
+  const [{ users }, { departments }] = await Promise.all([api('users_list.php'), api('departments_list.php')]);
+  usersCache = users;
+  const eu = editingUser;
+  const myDeptIds = eu ? eu.departments.map(d => d.id) : [];
+  const rows = users.map(u => `<tr><td><div class="who"><div class="avatar">${esc(u.full_name.charAt(0))}</div><div><b style="color:var(--navy)">${esc(u.full_name)}</b><br><small style="color:#9aa8b0">@${esc(u.username)}</small></div></div></td>
+    <td><span class="role-pill" style="${u.role === 'admin' ? 'background:var(--maroon)' : 'background:var(--blue);color:var(--navy)'}">${u.role === 'admin' ? 'ADMIN' : 'พนักงาน'}</span></td>
+    <td>${u.departments.map(d => `${d.icon} ${esc(d.name)}`).join(', ') || '—'}</td>
+    <td>${u.active ? '<span class="badge done">ใช้งาน</span>' : '<span class="badge fail">ปิดใช้งาน</span>'}</td>
+    <td><button class="btn sm ghost" onclick="editUserRow(${u.id})">แก้ไข</button></td></tr>`).join('');
+  const pwBox = pwRevealMsg ? `<div class="pw-box">🔑 ${pwRevealMsg}</div>` : '';
+  pwRevealMsg = null;
+  return `<div class="page-head"><h1>จัดการผู้ใช้</h1><p>สร้างบัญชีพนักงาน กำหนดรหัสผ่าน และเลือกแผนกที่สังกัดได้หลายแผนก</p></div>${pwBox}
+    <div class="detail-grid" style="grid-template-columns:400px 1fr">
+      <div class="panel"><h3>${eu ? '✏️ แก้ไขผู้ใช้: ' + esc(eu.full_name) : '➕ สร้างผู้ใช้ใหม่'}</h3>
+        <div class="form-row one"><div><label class="lab">ชื่อผู้ใช้ (Username)</label><input class="input" id="uUsername" value="${eu ? esc(eu.username) : ''}" placeholder="a-z 0-9 . _ - (3-50 ตัวอักษร)"></div></div>
+        <div class="form-row one"><div><label class="lab">ชื่อ-นามสกุล</label><input class="input" id="uFullName" value="${eu ? esc(eu.full_name) : ''}" placeholder="เช่น สมชาย ใจดี"></div></div>
+        <div class="form-row one"><div><label class="lab">รหัสผ่าน ${eu ? '(เว้นว่าง = ไม่เปลี่ยน)' : ''}</label><input class="input" id="uPassword" type="text" placeholder="${eu ? 'เว้นว่างถ้าไม่ต้องการเปลี่ยน' : 'อย่างน้อย 4 ตัวอักษร'}"></div></div>
+        <div class="form-row"><div><label class="lab">บทบาท</label><select class="input" id="uRole"><option value="emp" ${eu && eu.role === 'emp' ? 'selected' : ''}>พนักงาน</option><option value="admin" ${eu && eu.role === 'admin' ? 'selected' : ''}>แอดมิน</option></select></div>
+          <div><label class="lab">สถานะ</label><select class="input" id="uActive"><option value="1" ${!eu || eu.active ? 'selected' : ''}>ใช้งาน</option><option value="0" ${eu && !eu.active ? 'selected' : ''}>ปิดใช้งาน</option></select></div></div>
+        <label class="lab">แผนกที่สังกัด (เลือกได้หลายแผนก)</label>
+        <div class="chk-list" id="deptChecks">${departments.map(d => `<label class="chk-item ${myDeptIds.includes(d.id) ? 'on' : ''}"><input type="checkbox" value="${d.id}" ${myDeptIds.includes(d.id) ? 'checked' : ''} onchange="this.parentElement.classList.toggle('on',this.checked)">${d.icon} ${esc(d.name)}</label>`).join('') || '<span style="color:#9aa8b0;font-size:13px">ยังไม่มีแผนก</span>'}</div>
+        <div style="display:flex;gap:10px;margin-top:16px">
+          <button class="btn" onclick="saveUser()">${eu ? 'บันทึกการแก้ไข' : 'สร้างผู้ใช้'}</button>
+          ${eu ? `<button class="btn ghost" onclick="editingUser=null;go('users')">ยกเลิก</button>` : ''}
+        </div>
+      </div>
+      <div class="table-wrap"><table><thead><tr><th>ผู้ใช้</th><th>บทบาท</th><th>แผนก</th><th>สถานะ</th><th></th></tr></thead><tbody>${rows || '<tr><td colspan=5 style="text-align:center;color:#9aa8b0;padding:30px">ยังไม่มีผู้ใช้</td></tr>'}</tbody></table></div>
+    </div>`;
+}
+function editUserRow(id){ editingUser = usersCache.find(u => u.id === id) || null; go('users'); }
+async function saveUser(){
+  const username = document.getElementById('uUsername').value.trim();
+  const fullName = document.getElementById('uFullName').value.trim();
+  const password = document.getElementById('uPassword').value;
+  const role = document.getElementById('uRole').value;
+  const active = document.getElementById('uActive').value === '1';
+  const deptIds = [...document.querySelectorAll('#deptChecks input:checked')].map(el => +el.value);
+  if (!username) { toast('กรุณากรอกชื่อผู้ใช้'); return; }
+  if (!fullName) { toast('กรุณากรอกชื่อ-นามสกุล'); return; }
+  try {
+    const body = { username, full_name: fullName, password, role, active, department_ids: deptIds };
+    if (editingUser) body.id = editingUser.id;
+    const res = await api('users_save.php', { method: 'POST', body });
+    if (res.plain_password) {
+      pwRevealMsg = `บันทึกผู้ใช้ <code>${esc(res.user.username)}</code> เรียบร้อย — รหัสผ่าน: <code>${esc(res.plain_password)}</code> (แจ้งพนักงานแล้วสามารถปิดข้อความนี้ได้ทันที ระบบจะไม่แสดงรหัสผ่านนี้ซ้ำอีก)`;
+    } else {
+      toast('บันทึกผู้ใช้เรียบร้อย', true);
+    }
+    editingUser = null;
+    go('users');
+  } catch (e) { toast(e.message || 'บันทึกไม่สำเร็จ'); }
+}
+
+/* ---------- Admin: ประวัติการใช้งาน (Activity Log) ---------- */
+let logFilter = { user_id: '', event_type: '', date_from: '', date_to: '' };
+const LOG_EVENT_LABELS = { login: 'เข้าสู่ระบบ', login_failed: 'เข้าสู่ระบบไม่สำเร็จ', logout: 'ออกจากระบบ', video_open: 'เปิด/ดูวิดีโอจบ', doc_download: 'ดาวน์โหลดเอกสาร', quiz_submit: 'ส่งแบบทดสอบ', course_complete: 'เรียนจบคอร์ส', user_save: 'บันทึกผู้ใช้ (แอดมิน)' };
+async function viewLogs(){
+  const { users } = await api('users_list.php');
+  const qs = new URLSearchParams();
+  if (logFilter.user_id) qs.set('user_id', logFilter.user_id);
+  if (logFilter.event_type) qs.set('event_type', logFilter.event_type);
+  if (logFilter.date_from) qs.set('date_from', logFilter.date_from);
+  if (logFilter.date_to) qs.set('date_to', logFilter.date_to);
+  const { logs } = await api('logs_list.php' + (qs.toString() ? '?' + qs.toString() : ''));
+  const rows = logs.map(l => {
+    const meta = l.meta ? Object.entries(l.meta).map(([k,v]) => `${esc(k)}=${esc(String(v))}`).join(', ') : '';
+    return `<tr><td><small style="color:#9aa8b0">${esc(l.created_at)}</small></td><td>${esc(l.user_name || '—')}</td><td>${esc(LOG_EVENT_LABELS[l.event_type] || l.event_type)}</td><td>${esc(l.course_title || '—')}${l.lesson_title ? ' / ' + esc(l.lesson_title) : ''}</td><td><small>${esc(meta)}</small></td><td><small style="color:#9aa8b0">${esc(l.ip_address || '—')}</small></td></tr>`;
+  }).join('');
+  return `<div class="page-head"><h1>ประวัติการใช้งาน (Activity Log)</h1><p>บันทึกการเข้าสู่ระบบ การดูวิดีโอ ดาวน์โหลดเอกสาร และผลสอบของผู้ใช้ทุกคน</p></div>
+    <div class="panel" style="margin-bottom:20px">
+      <div class="form-row" style="grid-template-columns:1fr 1fr 1fr 1fr">
+        <div><label class="lab">ผู้ใช้</label><select class="input" id="lgUser"><option value="">ทั้งหมด</option>${users.map(u => `<option value="${u.id}" ${String(logFilter.user_id) === String(u.id) ? 'selected' : ''}>${esc(u.full_name)}</option>`).join('')}</select></div>
+        <div><label class="lab">ประเภทเหตุการณ์</label><select class="input" id="lgType"><option value="">ทั้งหมด</option>${Object.entries(LOG_EVENT_LABELS).map(([k,v]) => `<option value="${k}" ${logFilter.event_type === k ? 'selected' : ''}>${v}</option>`).join('')}</select></div>
+        <div><label class="lab">จากวันที่</label><input class="input" id="lgFrom" type="date" value="${logFilter.date_from}"></div>
+        <div><label class="lab">ถึงวันที่</label><input class="input" id="lgTo" type="date" value="${logFilter.date_to}"></div>
+      </div>
+      <div style="display:flex;gap:10px"><button class="btn" onclick="applyLogFilter()">กรองข้อมูล</button><button class="btn ghost" onclick="logFilter={user_id:'',event_type:'',date_from:'',date_to:''};go('logs')">ล้างตัวกรอง</button></div>
+    </div>
+    <div class="table-wrap"><table><thead><tr><th>เวลา</th><th>ผู้ใช้</th><th>เหตุการณ์</th><th>คอร์ส/บทเรียน</th><th>รายละเอียด</th><th>IP</th></tr></thead><tbody>${rows || '<tr><td colspan=6 style="text-align:center;color:#9aa8b0;padding:30px">ไม่มีข้อมูล</td></tr>'}</tbody></table></div>`;
+}
+function applyLogFilter(){
+  logFilter = {
+    user_id: document.getElementById('lgUser').value,
+    event_type: document.getElementById('lgType').value,
+    date_from: document.getElementById('lgFrom').value,
+    date_to: document.getElementById('lgTo').value,
+  };
+  go('logs');
+}
+
+/* ---------- init: กู้ session เดิม (ถ้ามี) ตอนโหลดหน้าใหม่ ---------- */
+async function init(){
+  try {
+    const res = await api('auth_me.php');
+    if (res.user) { CURRENT = res.user; CSRF = res.csrf; startApp(); }
+  } catch (e) { /* ยังไม่ได้เข้าสู่ระบบ / เชื่อมต่อไม่ได้ -> อยู่หน้า login ต่อ */ }
+}
+init();
 </script>
 </body>
 </html>

@@ -1,0 +1,7 @@
+# กันไม่ให้เข้าถึงไฟล์ config/bootstrap ตรง ๆ ผ่าน URL (เผื่อ PHP handler มีปัญหาแล้วเซิร์ฟเป็นไฟล์ text ธรรมดา)
+<FilesMatch "^(config|_bootstrap)\.php$">
+  Require all denied
+</FilesMatch>
+
+# ปิดการโชว์รายชื่อไฟล์ในโฟลเดอร์นี้
+Options -Indexes
