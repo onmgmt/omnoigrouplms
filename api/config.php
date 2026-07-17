@@ -14,7 +14,7 @@
 define('DB_HOST', 'localhost');
 define('DB_NAME', 'omnoigro_lms');
 define('DB_USER', 'omnoigro_omnoigro');
-define('DB_PASS', ' lsT-mHlAJ92*89');
+define('DB_PASS', 'lsT-mHlAJ92*89');
 // ----------------------------------------------------------------------
 
 // เกณฑ์ผ่านแบบทดสอบ (%) — ใช้ตัดสินว่า "ผ่านคอร์ส" เพื่อปลดล็อกคอร์ส level ถัดไปด้วย
