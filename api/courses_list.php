@@ -6,7 +6,7 @@ $u = require_login();
 $deptParam = isset($_GET['dept']) ? (int)$_GET['dept'] : null;
 
 if ($u['role'] === 'admin') {
-  $sql = 'SELECT c.id, c.department_id, c.title, c.description, c.icon, c.color, c.level,
+  $sql = 'SELECT c.id, c.department_id, c.title, c.description, c.icon, c.color, c.level, c.published,
                  d.name AS department_name,
                  (SELECT COUNT(*) FROM lessons l WHERE l.course_id = c.id) AS lesson_count,
                  (SELECT COUNT(*) FROM lessons l WHERE l.course_id = c.id AND l.drive_video_id <> \'\') AS video_count,
@@ -18,7 +18,11 @@ if ($u['role'] === 'admin') {
   $sql .= ' ORDER BY d.name, c.level';
   $stmt = db()->prepare($sql);
   $stmt->execute($params);
-  json_response(['courses' => $stmt->fetchAll()]);
+  $rows = $stmt->fetchAll();
+  // published มาจาก MySQL เป็น string "0"/"1" ซึ่งเป็น truthy ทั้งคู่ใน JS -> แปลงเป็น bool จริงก่อนส่งออก
+  foreach ($rows as &$r) { $r['published'] = (bool)$r['published']; }
+  unset($r);
+  json_response(['courses' => $rows]);
 }
 
 // ---------- พนักงาน: ต้องอยู่ในแผนกนั้น + คำนวณสถานะปลดล็อกตาม level ----------
@@ -38,7 +42,7 @@ $in = implode(',', array_fill(0, count($targetDeptIds), '?'));
 $stmt = db()->prepare(
   "SELECT c.id, c.department_id, c.title, c.description, c.icon, c.color, c.level, d.name AS department_name
    FROM courses c JOIN departments d ON d.id = c.department_id
-   WHERE c.department_id IN ($in) ORDER BY c.department_id, c.level"
+   WHERE c.department_id IN ($in) AND c.published = 1 ORDER BY c.department_id, c.level"
 );
 $stmt->execute($targetDeptIds);
 $courses = $stmt->fetchAll();

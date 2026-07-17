@@ -6,12 +6,13 @@ $u = require_login();
 $courseId = isset($_GET['course_id']) ? (int)$_GET['course_id'] : 0;
 if (!$courseId) json_error('ไม่พบคอร์ส', 404);
 
-$cstmt = db()->prepare('SELECT department_id, level, title FROM courses WHERE id = ?');
+$cstmt = db()->prepare('SELECT department_id, level, title, published FROM courses WHERE id = ?');
 $cstmt->execute([$courseId]);
 $course = $cstmt->fetch();
 if (!$course) json_error('ไม่พบคอร์ส', 404);
 
 if ($u['role'] !== 'admin') {
+  if (!(int)$course['published']) json_error('ไม่พบคอร์ส', 404);
   if (!user_in_department($u['id'], (int)$course['department_id'])) json_error('ไม่มีสิทธิ์เข้าถึงคอร์สนี้', 403);
   if (course_is_locked_for_user($u['id'], (int)$course['department_id'], (int)$course['level'])) {
     json_error('คอร์สนี้ยังไม่ปลดล็อก', 423);

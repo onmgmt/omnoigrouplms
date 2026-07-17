@@ -15,6 +15,8 @@ if (!$course) json_error('ไม่พบคอร์ส', 404);
 
 $locked = false;
 if ($u['role'] !== 'admin') {
+  // คอร์สที่ยังไม่เผยแพร่ (ฉบับร่าง) ต้องไม่ให้พนักงานเห็นเลย -> ตอบเหมือนไม่พบคอร์ส กันการรู้ว่ามีคอร์สนี้อยู่
+  if (!(int)$course['published']) json_error('ไม่พบคอร์ส', 404);
   if (!user_in_department($u['id'], (int)$course['department_id'])) {
     json_error('คุณไม่ได้สังกัดแผนกของคอร์สนี้', 403);
   }
@@ -59,6 +61,7 @@ json_response([
     'color' => $course['color'],
     'level' => (int)$course['level'],
     'locked' => $locked,
+    'published' => (bool)$course['published'],
   ],
   'lessons' => $lessons,
   'quiz_count' => $quizCount,

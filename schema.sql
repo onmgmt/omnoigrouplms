@@ -51,6 +51,7 @@ CREATE TABLE IF NOT EXISTS courses (
   icon VARCHAR(10) NOT NULL DEFAULT '🎓',
   color VARCHAR(20) NOT NULL DEFAULT '#003149',
   level INT UNSIGNED NOT NULL DEFAULT 1,
+  published TINYINT(1) NOT NULL DEFAULT 1 COMMENT '0 = ฉบับร่าง/ซ่อนจากพนักงาน, 1 = เผยแพร่แล้ว',
   created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   CONSTRAINT fk_course_dept FOREIGN KEY (department_id) REFERENCES departments(id) ON DELETE CASCADE,
   INDEX idx_courses_dept_level (department_id, level)

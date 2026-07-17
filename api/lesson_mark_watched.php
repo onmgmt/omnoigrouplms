@@ -9,13 +9,14 @@ $lessonId = (int)($body['lesson_id'] ?? 0);
 if (!$lessonId) json_error('ไม่พบบทเรียน', 400);
 
 $stmt = db()->prepare(
-  'SELECT l.id, l.course_id, c.department_id, c.level FROM lessons l JOIN courses c ON c.id = l.course_id WHERE l.id = ?'
+  'SELECT l.id, l.course_id, c.department_id, c.level, c.published FROM lessons l JOIN courses c ON c.id = l.course_id WHERE l.id = ?'
 );
 $stmt->execute([$lessonId]);
 $lesson = $stmt->fetch();
 if (!$lesson) json_error('ไม่พบบทเรียน', 404);
 
 if ($u['role'] !== 'admin') {
+  if (!(int)$lesson['published']) json_error('ไม่พบบทเรียน', 404);
   if (!user_in_department($u['id'], (int)$lesson['department_id'])) json_error('ไม่มีสิทธิ์เข้าถึงคอร์สนี้', 403);
   if (course_is_locked_for_user($u['id'], (int)$lesson['department_id'], (int)$lesson['level'])) {
     json_error('คอร์สนี้ยังไม่ปลดล็อก ต้องผ่านคอร์สก่อนหน้าก่อน', 423);

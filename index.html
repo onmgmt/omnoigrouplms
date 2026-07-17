@@ -200,6 +200,9 @@ label.lab{display:block;font-size:13px;font-weight:600;color:var(--navy);margin-
 .vid-on{background:#e3f6ea;color:var(--ok)}
 .vid-off{background:#eef2f5;color:#9aa8b0}
 .badge.locked{background:#eef2f5;color:#9aa8b0}
+.badge.draft{background:#fff3cd;color:#8a6d1a}
+.up-item{flex-wrap:wrap}
+.up-item .actions{display:flex;gap:6px;flex-wrap:wrap;margin-left:auto}
 .chk-list{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:6px}
 .chk-item{display:flex;align-items:center;gap:7px;border:1.5px solid var(--line);border-radius:10px;padding:8px 12px;font-size:13.5px;cursor:pointer;transition:.12s}
 .chk-item input{width:16px;height:16px;accent-color:var(--navy)}
@@ -374,12 +377,14 @@ async function go(screen, opt = {}){
     else if (screen === 'admin') html = await viewAdmin();
     else if (screen === 'report') html = await viewReport();
     else if (screen === 'manage') html = await viewManage();
+    else if (screen === 'quizedit') html = await viewQuizEdit(opt.courseId);
     else if (screen === 'depts') html = await viewDepts();
     else if (screen === 'users') html = await viewUsers();
     else if (screen === 'logs') html = await viewLogs();
     if (myToken !== __navToken) return; // ถูกแทนที่ด้วยการนำทางใหม่กว่าแล้ว
     v.innerHTML = html;
     if (screen === 'manage') renderLessonRows();
+    else if (screen === 'quizedit') renderQuizQuestions();
   } catch (e) {
     if (myToken !== __navToken) return;
     if (e instanceof Redirect) { go(e.screen, e.opt); return; }
@@ -688,15 +693,22 @@ async function viewReport(){
 /* ---------- Admin: จัดการคอร์ส + วิดีโอ/เอกสาร Google Drive ---------- */
 let draftLessons = [{ title: '', driveId: '', docId: '' }];
 let manageDepts = [];
+let editingCourse = null; // null = โหมดสร้างใหม่, object = กำลังแก้ไขคอร์สนี้อยู่
 async function viewManage(){
   const [{ departments }, { courses }] = await Promise.all([api('departments_list.php'), api('courses_list.php')]);
   manageDepts = departments;
-  const deptOptions = departments.map(d => `<option value="${d.id}">${d.icon} ${esc(d.name)}</option>`).join('');
+  const ed = editingCourse;
+  const deptOptions = departments.map(d => `<option value="${d.id}" ${ed && ed.department_id === d.id ? 'selected' : ''}>${d.icon} ${esc(d.name)}</option>`).join('');
   const grouped = departments.map(d => {
     const cs = courses.filter(c => c.department_id === d.id);
     if (!cs.length) return '';
     return `<div style="margin:12px 0 4px;font-size:12px;font-weight:700;color:${d.color};font-family:'Prompt'">${d.icon} ${esc(d.name)}</div>
-      ${cs.map(c => `<div class="up-item"><div class="ic">${c.icon}</div><div class="t">Lv.${c.level} · ${esc(c.title)}<small>${c.lesson_count} บท · ${c.video_count}/${c.lesson_count} ผูกวิดีโอ · ${c.doc_count} มีเอกสาร · ${c.quiz_count} ข้อสอบ</small></div></div>`).join('')}`;
+      ${cs.map(c => `<div class="up-item"><div class="ic">${c.icon}</div><div class="t">Lv.${c.level} · ${esc(c.title)} ${c.published ? '' : '<span class="badge draft">ซ่อนอยู่</span>'}<small>${c.lesson_count} บท · ${c.video_count}/${c.lesson_count} ผูกวิดีโอ · ${c.doc_count} มีเอกสาร · ${c.quiz_count} ข้อสอบ</small></div>
+        <div class="actions">
+          <button class="btn sm ghost" onclick="startEditCourse(${c.id})">✏️ แก้ไข</button>
+          <button class="btn sm ghost" onclick="go('quizedit',{courseId:${c.id}})">📝 ข้อสอบ</button>
+          <button class="btn sm ghost" onclick="toggleCoursePublish(${c.id},${c.published})">${c.published ? '🙈 ซ่อน' : '👁️ เผยแพร่'}</button>
+        </div></div>`).join('')}`;
   }).join('') || '<p style="color:#9aa8b0;font-size:13px">ยังไม่มีคอร์ส</p>';
   return `<div class="page-head"><h1>จัดการคอร์ส & วิดีโอ/เอกสาร Google Drive</h1><p>สร้างหลักสูตรภายในแผนก กำหนด Level ลำดับการเรียน และผูกลิงก์วิดีโอ + เอกสารประกอบจาก Google Drive ของแต่ละบท</p></div>
   <div class="panel" style="margin-bottom:20px">
@@ -704,18 +716,24 @@ async function viewManage(){
     <div class="help-box">1) อัปโหลดวิดีโอ/เอกสารขึ้น Google Drive · 2) คลิกขวา → <b>แชร์</b> → เปลี่ยนสิทธิ์เป็น <b>"ทุกคนที่มีลิงก์ - ดูได้ (Viewer)"</b> · 3) คัดลอกลิงก์แชร์ (เช่น <code>https://drive.google.com/file/d/&lt;ID&gt;/view</code>) แล้ววางในช่องของแต่ละบทด้านล่าง — ระบบจะดึง File ID ให้อัตโนมัติ (จะวางเฉพาะ File ID ก็ได้) · เอกสารประกอบ (เช่น PDF สไลด์) จะให้ดาวน์โหลดได้หลังผู้เรียนดูวิดีโอของบทนั้นจบ</div>
   </div>
   <div class="detail-grid" style="grid-template-columns:1fr 360px">
-    <div class="panel"><h3>➕ สร้างคอร์สใหม่</h3><p class="sub">เลือกแผนก กำหนด Level และเพิ่มบทเรียน</p>
-      <div class="form-row one"><div><label class="lab">ชื่อหลักสูตร</label><input class="input" id="ncTitle" placeholder="เช่น เทคนิคการเจรจาต่อรอง"></div></div>
+    <div class="panel"><h3>${ed ? '✏️ แก้ไขหลักสูตร: ' + esc(ed.title) : '➕ สร้างคอร์สใหม่'}</h3><p class="sub">${ed ? 'แก้ไขข้อมูลคอร์ส บทเรียน และสถานะเผยแพร่' : 'เลือกแผนก กำหนด Level และเพิ่มบทเรียน'}</p>
+      <div class="form-row one"><div><label class="lab">ชื่อหลักสูตร</label><input class="input" id="ncTitle" value="${ed ? esc(ed.title) : ''}" placeholder="เช่น เทคนิคการเจรจาต่อรอง"></div></div>
       <div class="form-row"><div><label class="lab">แผนก (Department)</label><select class="input" id="ncDept">${deptOptions || '<option value="">— ยังไม่มีแผนก สร้างแผนกก่อน —</option>'}</select></div>
-        <div><label class="lab">Level (เว้นว่าง = ต่อจากลำดับล่าสุดในแผนกอัตโนมัติ)</label><input class="input" id="ncLevel" type="number" min="1" placeholder="เช่น 1, 2, 3..."></div></div>
-      <div class="form-row"><div><label class="lab">ไอคอน (emoji)</label><input class="input" id="ncIcon" value="🎓"></div>
-        <div><label class="lab">คำอธิบายสั้น</label><input class="input" id="ncDesc" placeholder="สรุปสิ่งที่ผู้เรียนจะได้รับ"></div></div>
+        <div><label class="lab">Level ${ed ? '' : '(เว้นว่าง = ต่อจากลำดับล่าสุดในแผนกอัตโนมัติ)'}</label><input class="input" id="ncLevel" type="number" min="1" value="${ed ? ed.level : ''}" placeholder="เช่น 1, 2, 3..."></div></div>
+      <div class="form-row"><div><label class="lab">ไอคอน (emoji)</label><input class="input" id="ncIcon" value="${ed ? esc(ed.icon) : '🎓'}"></div>
+        <div><label class="lab">คำอธิบายสั้น</label><input class="input" id="ncDesc" value="${ed ? esc(ed.description || '') : ''}" placeholder="สรุปสิ่งที่ผู้เรียนจะได้รับ"></div></div>
+      <label class="chk-item ${(ed ? ed.published : true) ? 'on' : ''}" style="display:inline-flex;margin-bottom:16px">
+        <input type="checkbox" id="ncPublished" ${(ed ? ed.published : true) ? 'checked' : ''} onchange="this.parentElement.classList.toggle('on',this.checked)">
+        👁️ เผยแพร่ให้พนักงานเห็น (ไม่ติ๊ก = ซ่อนคอร์สนี้จากพนักงานทุกคน)</label>
       <label class="lab">บทเรียน (ชื่อบท + ลิงก์วิดีโอ + ลิงก์เอกสารประกอบ)</label>
       <div id="lessonRows"></div>
       <button class="btn ghost sm" style="margin:4px 0 16px" onclick="addLessonRow()">+ เพิ่มบท</button>
-      <div class="help-box">เว้นลิงก์วิดีโอว่างได้ → บทนั้นจะแสดงว่า <b>ยังไม่มีวิดีโอ</b> จนกว่าจะใส่ลิงก์จริง · คอร์ส Level มากกว่า 1 จะถูกล็อกจนกว่าพนักงานจะผ่าน Level ก่อนหน้าในแผนกเดียวกัน · แบบทดสอบจะถูกสร้างเป็นตัวอย่าง 2 ข้อให้แก้ไขภายหลัง</div>
-      <div style="display:flex;gap:12px"><button class="btn" onclick="createCourse()">บันทึกคอร์ส</button>
-        <button class="btn ghost" onclick="draftLessons=[{title:'',driveId:'',docId:''}];go('manage')">ล้างฟอร์ม</button></div>
+      <div class="help-box">เว้นลิงก์วิดีโอว่างได้ → บทนั้นจะแสดงว่า <b>ยังไม่มีวิดีโอ</b> จนกว่าจะใส่ลิงก์จริง · คอร์ส Level มากกว่า 1 จะถูกล็อกจนกว่าพนักงานจะผ่าน Level ก่อนหน้าในแผนกเดียวกัน${ed ? ' · แก้ไขคำถามแบบทดสอบได้ที่ปุ่ม "📝 ข้อสอบ" ในรายการคอร์สด้านขวา' : ' · แบบทดสอบจะถูกสร้างเป็นตัวอย่าง 2 ข้อ แก้ไขได้ภายหลังที่ปุ่ม "📝 ข้อสอบ"'}</div>
+      <div style="display:flex;gap:12px"><button class="btn" onclick="saveCourse()">${ed ? 'บันทึกการแก้ไข' : 'บันทึกคอร์ส'}</button>
+        ${ed
+          ? `<button class="btn ghost" onclick="cancelEditCourse()">ยกเลิกการแก้ไข</button>`
+          : `<button class="btn ghost" onclick="draftLessons=[{title:'',driveId:'',docId:''}];go('manage')">ล้างฟอร์ม</button>`}
+      </div>
     </div>
     <div><div class="sidebox"><h4>หลักสูตรในระบบ (${courses.length})</h4>${grouped}</div></div>
   </div>`;
@@ -732,28 +750,118 @@ function renderLessonRows(){
     </div></div>`).join('');
 }
 function addLessonRow(){ draftLessons.push({ title: '', driveId: '', docId: '' }); renderLessonRows(); }
-async function createCourse(){
+async function startEditCourse(id){
+  try {
+    const { course, lessons } = await api('course_detail.php?id=' + id);
+    editingCourse = course;
+    draftLessons = lessons.length
+      ? lessons.map(l => ({ id: l.id, title: l.title, driveId: l.drive_video_id || '', docId: l.drive_doc_id || '' }))
+      : [{ title: '', driveId: '', docId: '' }];
+    go('manage');
+  } catch (e) { toast(e.message || 'โหลดข้อมูลคอร์สไม่สำเร็จ'); }
+}
+function cancelEditCourse(){
+  editingCourse = null;
+  draftLessons = [{ title: '', driveId: '', docId: '' }];
+  go('manage');
+}
+async function toggleCoursePublish(id, current){
+  try {
+    await api('courses_publish.php', { method: 'POST', body: { id, published: !current } });
+    toast(current ? 'ซ่อนคอร์สจากพนักงานแล้ว' : 'เผยแพร่คอร์สให้พนักงานเห็นแล้ว', true);
+    go('manage');
+  } catch (e) { toast(e.message || 'เปลี่ยนสถานะไม่สำเร็จ'); }
+}
+async function saveCourse(){
   const deptId = +(document.getElementById('ncDept').value || 0);
   const title = document.getElementById('ncTitle').value.trim();
   const level = document.getElementById('ncLevel').value.trim();
   const icon = document.getElementById('ncIcon').value.trim() || '🎓';
   const desc = document.getElementById('ncDesc').value.trim();
-  const lessons = draftLessons.filter(l => l.title.trim()).map(l => ({ title: l.title.trim(), driveId: l.driveId.trim(), docId: l.docId.trim() }));
+  const published = document.getElementById('ncPublished').checked;
+  const lessons = draftLessons.filter(l => l.title.trim()).map(l => ({ id: l.id || undefined, title: l.title.trim(), driveId: l.driveId.trim(), docId: l.docId.trim() }));
   if (!deptId) { toast('กรุณาเลือกแผนก (สร้างแผนกก่อนถ้ายังไม่มี)'); return; }
   if (!title) { toast('กรุณากรอกชื่อหลักสูตร'); return; }
   if (!lessons.length) { toast('กรุณาเพิ่มบทเรียนอย่างน้อย 1 บท'); return; }
   const dept = manageDepts.find(d => d.id === deptId);
+  const wasEdit = !!editingCourse;
   try {
-    await api('courses_save.php', { method: 'POST', body: {
+    const body = {
       department_id: deptId, title, description: desc, icon,
       color: dept ? dept.color : '#003149',
       level: level ? +level : null,
-      lessons,
-    }});
+      published, lessons,
+    };
+    if (editingCourse) body.id = editingCourse.id;
+    await api('courses_save.php', { method: 'POST', body });
     draftLessons = [{ title: '', driveId: '', docId: '' }];
-    toast('สร้างหลักสูตร "' + title + '" เรียบร้อย', true);
+    editingCourse = null;
+    toast((wasEdit ? 'บันทึกการแก้ไข "' : 'สร้างหลักสูตร "') + title + '" เรียบร้อย', true);
     go('manage');
   } catch (e) { toast(e.message || 'บันทึกคอร์สไม่สำเร็จ'); }
+}
+
+/* ---------- Admin: จัดการแบบทดสอบท้ายคอร์ส ---------- */
+let draftQuiz = [];
+let quizEditCourseId = null;
+async function viewQuizEdit(cid){
+  const { course_title, questions } = await api('quiz_questions_list.php?course_id=' + cid);
+  quizEditCourseId = cid;
+  draftQuiz = questions.length
+    ? questions.map(q => ({ question: q.question, options: [...q.options], correct_index: q.correct_index }))
+    : [{ question: '', options: ['', ''], correct_index: 0 }];
+  return `<div class="page-head"><div class="crumb" onclick="go('manage')">← กลับหน้าจัดการคอร์ส</div>
+    <h1>📝 จัดการแบบทดสอบ: ${esc(course_title)}</h1>
+    <p>ตั้งคำถาม ตัวเลือก และเลือกคำตอบที่ถูกต้อง — พนักงานต้องทำได้ ${PASS_MARK}% ขึ้นไปจึงจะผ่านคอร์สและปลดล็อก Level ถัดไป</p></div>
+    <div class="panel">
+      <div id="quizRows"></div>
+      <button class="btn ghost sm" style="margin:4px 0 16px" onclick="addQuizQuestion()">+ เพิ่มคำถาม</button>
+      <div class="help-box">แต่ละคำถามต้องมีอย่างน้อย 2 ตัวเลือก กรอกให้ครบทุกช่อง แล้วเลือกวงกลมหน้าตัวเลือกที่ถูกต้อง 1 ข้อ · บันทึกแล้วจะแทนที่ชุดคำถามเดิมของคอร์สนี้ทั้งหมด (ไม่กระทบคะแนนที่พนักงานเคยทำไปแล้ว)</div>
+      <div style="display:flex;gap:12px">
+        <button class="btn" onclick="saveQuiz()">บันทึกแบบทดสอบ</button>
+        <button class="btn ghost" onclick="go('manage')">ยกเลิก</button>
+      </div>
+    </div>`;
+}
+function renderQuizQuestions(){
+  const el = document.getElementById('quizRows'); if (!el) return;
+  el.innerHTML = draftQuiz.map((q, qi) => `<div class="lesson-row">
+    <div class="row1"><div class="ln">${qi+1}</div>
+      <input class="input" placeholder="คำถามข้อที่ ${qi+1}" value="${esc(q.question)}" oninput="draftQuiz[${qi}].question=this.value">
+      <button class="btn ghost sm" onclick="removeQuizQuestion(${qi})">ลบคำถาม</button></div>
+    ${q.options.map((o, oi) => `<div class="row1" style="margin-bottom:6px">
+      <input type="radio" name="qcorrect${qi}" ${q.correct_index === oi ? 'checked' : ''} onchange="draftQuiz[${qi}].correct_index=${oi}" style="width:18px;height:18px;flex:none;accent-color:var(--navy)">
+      <input class="input" placeholder="ตัวเลือกที่ ${oi+1}" value="${esc(o)}" oninput="draftQuiz[${qi}].options[${oi}]=this.value">
+      <button class="btn ghost sm" onclick="removeQuizOption(${qi},${oi})">ลบ</button></div>`).join('')}
+    <button class="btn ghost sm" onclick="addQuizOption(${qi})">+ เพิ่มตัวเลือก</button>
+  </div>`).join('');
+}
+function addQuizQuestion(){ draftQuiz.push({ question: '', options: ['', ''], correct_index: 0 }); renderQuizQuestions(); }
+function removeQuizQuestion(qi){
+  draftQuiz.splice(qi, 1);
+  if (!draftQuiz.length) draftQuiz = [{ question: '', options: ['', ''], correct_index: 0 }];
+  renderQuizQuestions();
+}
+function addQuizOption(qi){ draftQuiz[qi].options.push(''); renderQuizQuestions(); }
+function removeQuizOption(qi, oi){
+  if (draftQuiz[qi].options.length <= 2) { toast('แต่ละคำถามต้องมีอย่างน้อย 2 ตัวเลือก'); return; }
+  draftQuiz[qi].options.splice(oi, 1);
+  if (draftQuiz[qi].correct_index >= draftQuiz[qi].options.length || draftQuiz[qi].correct_index === oi) draftQuiz[qi].correct_index = 0;
+  renderQuizQuestions();
+}
+async function saveQuiz(){
+  for (let qi = 0; qi < draftQuiz.length; qi++) {
+    const q = draftQuiz[qi];
+    if (!q.question.trim()) { toast(`กรุณากรอกคำถามข้อที่ ${qi+1}`); return; }
+    if (q.options.length < 2) { toast(`คำถามข้อที่ ${qi+1} ต้องมีอย่างน้อย 2 ตัวเลือก`); return; }
+    if (q.options.some(o => !o.trim())) { toast(`กรุณากรอกตัวเลือกให้ครบทุกช่องในคำถามข้อที่ ${qi+1} (หรือลบช่องที่ไม่ใช้ออก)`); return; }
+  }
+  const questions = draftQuiz.map(q => ({ question: q.question.trim(), options: q.options.map(o => o.trim()), correct_index: q.correct_index }));
+  try {
+    await api('quiz_questions_save.php', { method: 'POST', body: { course_id: quizEditCourseId, questions } });
+    toast('บันทึกแบบทดสอบเรียบร้อย', true);
+    go('manage');
+  } catch (e) { toast(e.message || 'บันทึกแบบทดสอบไม่สำเร็จ'); }
 }
 
 /* ---------- Admin: จัดการแผนก ---------- */
