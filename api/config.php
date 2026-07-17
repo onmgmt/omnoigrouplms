@@ -12,9 +12,9 @@
 
 // ---- แก้ 4 บรรทัดนี้ตามค่าจริงจาก DirectAdmin → MySQL Management ก่อน deploy เสมอ ----
 define('DB_HOST', 'localhost');
-define('DB_NAME', 'CHANGE_ME_db_name');
-define('DB_USER', 'CHANGE_ME_db_user');
-define('DB_PASS', 'CHANGE_ME_db_password');
+define('DB_NAME', 'omnoigro_lms');
+define('DB_USER', 'omnoigro_omnoigro');
+define('DB_PASS', ' lsT-mHlAJ92*89');
 // ----------------------------------------------------------------------
 
 // เกณฑ์ผ่านแบบทดสอบ (%) — ใช้ตัดสินว่า "ผ่านคอร์ส" เพื่อปลดล็อกคอร์ส level ถัดไปด้วย
