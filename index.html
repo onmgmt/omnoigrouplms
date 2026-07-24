@@ -506,11 +506,12 @@ async function viewPlayer(cid, lessonId){
   const idx = lessons.findIndex(l => l.id === lessonId);
   if (idx === -1) throw new Redirect('course', { courseId: cid });
   const l = lessons[idx];
-  currentPlayerLesson = { id: l.id, drive_doc_id: l.drive_doc_id };
+  currentPlayerLesson = { id: l.id, drive_doc_id: l.drive_doc_id, drive_video_id: l.drive_video_id };
   const already = l.watched;
   const finBlock = `<div class="finished-ov${already ? '' : ' hidden'}" id="finOv"><div class="big">✓</div><h3>ดูจบแล้ว!</h3>
       <p style="opacity:.8">คุณทำเครื่องหมายว่าดูบทเรียนนี้จบแล้ว</p>
       <div style="display:flex;gap:10px;flex-wrap:wrap;justify-content:center">
+        ${l.drive_video_id ? `<button class="btn ghost" style="color:#fff;border-color:rgba(255,255,255,.4)" onclick="rewatchVideo()">🔁 ดูวิดีโอซ้ำ</button>` : ''}
         ${idx < lessons.length-1
           ? `<button class="btn" onclick="go('player',{courseId:${cid},lessonId:${lessons[idx+1].id}})">บทถัดไป →</button>`
           : `<button class="btn" onclick="afterLastLesson(${cid})">ไปทำแบบทดสอบ 📝</button>`}
@@ -562,6 +563,14 @@ async function downloadDoc(lessonId, docId){
   } catch (e) { toast(e.message || 'ดาวน์โหลดไม่สำเร็จ'); }
 }
 function showFinished(){ const ov = document.getElementById('finOv'); if (ov) ov.classList.remove('hidden'); }
+function rewatchVideo(){
+  const ov = document.getElementById('finOv');
+  if (ov) ov.classList.add('hidden');
+  const frame = document.getElementById('driveFrame');
+  if (frame && currentPlayerLesson && currentPlayerLesson.drive_video_id) {
+    frame.src = driveEmbedSrc(currentPlayerLesson.drive_video_id);
+  }
+}
 function afterLastLesson(cid){ go('quiz', { courseId: cid }); }
 
 /* ---------- Quiz ---------- */
